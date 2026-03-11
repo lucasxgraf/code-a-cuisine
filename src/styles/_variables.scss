@@ -1,0 +1,16 @@
+$color-olive-green: #396039;
+$color-middle-green: #1E5515;
+$color-dark-green: #10310B;
+$color-cream: #FAF0E6;
+$color-white: #FFFFFF;
+
+$font-quicksand: 'Quicksand', sans-serif;
+$font-ubuntu: 'Ubuntu', sans-serif;
+
+@mixin flex-layout($direction:row, $jc:center, $ai: center, $g:0){
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $jc;
+  align-items: $ai;
+  gap: $g;
+}
