@@ -1,0 +1,67 @@
+@use '../../../../styles/variables' as *;
+
+:host {
+  display: inline-block;
+}
+
+.btn {
+  @include flex-layout(row, center, center, 8px);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: $font-quicksand;
+  font-size: 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
+  white-space: nowrap;
+  text-decoration: none;
+  padding: 16px 24px;
+
+  &__arrow {
+    font-size: 1.25rem;
+    transition: transform 0.2s;
+  }
+
+  &:hover &__arrow {
+    transform: translateX(4px);
+  }
+
+  &--primary-green {
+    background-color: $color-olive-green;
+    color: $color-cream;
+
+    &:hover { 
+      background-color: $color-middle-green; 
+      font-weight: 700;
+      color: $color-white;
+    }
+  }
+  
+  &--primary-creme {
+    background-color: $color-cream;
+    color: $color-middle-green;
+    
+    &:hover { 
+      font-weight: 700;
+    }
+  }
+
+  /* Modifier: Secondary */
+  &--secondary-green {
+    color: $color-olive-green;
+    font-weight: 500;
+
+    &:hover { 
+      background-color: rgba($color-olive-green, 0.2);
+    }
+  }
+
+  &--secondary-creme {
+    color: $color-cream;
+    font-weight: 500;
+
+    &:hover { 
+      background-color: rgba($color-cream, 0.8);
+    }
+  }
+}

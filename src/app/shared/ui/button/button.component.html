@@ -1,0 +1,6 @@
+<button [type]="type()" [class]="buttonClasses()">
+  <ng-content />
+  @if (variant() === 'secondary') {
+    <span class="btn__arrow" aria-hidden="true">→</span>
+  }
+</button>
