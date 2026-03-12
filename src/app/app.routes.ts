@@ -1,3 +1,31 @@
 import { Routes } from '@angular/router';
+import { HeroComponent } from './features/hero/hero.component';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  { 
+    path: 'hero', 
+    component: HeroComponent, 
+    data: {
+      headerTheme: 'green-logo',
+      backLink: false, 
+    } 
+  },
+  // { 
+  //   path: 'cookbook', 
+  //   component: CookbookComponent, 
+  //   data: { 
+  //     backLink: true, 
+  //     backTarget: '/home', 
+  //     backLabel: 'Back to home' 
+  //   } 
+  // },
+  // { 
+  //   path: 'cuisine/:id', 
+  //   component: CuisineDetailComponent, 
+  //   data: { 
+  //     backLink: true, 
+  //     backTarget: '/cookbook', 
+  //     backLabel: 'Back to Cookbook'
+  //   }
+  // }
+];
