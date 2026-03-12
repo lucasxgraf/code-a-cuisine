@@ -3,7 +3,7 @@ import { HeroComponent } from './features/hero/hero.component';
 
 export const routes: Routes = [
   { 
-    path: 'hero', 
+    path: '', 
     component: HeroComponent, 
     data: {
       headerTheme: 'green-logo',
