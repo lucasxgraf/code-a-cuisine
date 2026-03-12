@@ -1,0 +1,63 @@
+@use '../../../../styles/variables' as *;
+
+.footer {
+  padding: 40px 0;
+  font-family: $font-quicksand;
+  transition: color 0.3s ease;
+
+  &__wrapper {
+    @include flex-layout(row, space-between, center, 20px);
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 32px;
+      text-align: center;
+    }
+  }
+
+  &__section {
+    flex: 1;
+    
+    &--links {
+      @include flex-layout(column, flex-start, flex-start, 16px);
+
+      @media (max-width: 768px) {
+        align-items: center;
+      }
+    }
+
+    &--copyright {
+      text-align: center;
+      font-weight: 500;
+    }
+
+    &--logo {
+      @include flex-layout(row, flex-end, center);
+      cursor: pointer;
+
+      @media (max-width: 768px) {
+        justify-content: center;
+        order: -1;
+      }
+    }
+  }
+
+  &__link {
+    color: inherit;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.3s ease;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
+  &--creme-logo {
+    color: $color-creme;
+  }
+
+  &--green-logo {
+    color: $color-olive-green;
+  }
+}
