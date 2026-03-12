@@ -1,0 +1,38 @@
+@use '../../../../styles/variables' as *;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.cuisine-card {
+  cursor: pointer;
+  outline: none;
+  max-width: 400px;
+  
+  &__title {
+    font-family: $font-quicksand;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $color-middle-green;
+    margin-bottom: 16px;
+    @include flex-layout($ai: center, $jc: flex-start);
+  }
+  
+  &__image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: #eee;
+  }
+
+  &__image {
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover &__image {
+    transform: scale(1.05);
+  }
+}

@@ -1,0 +1,7 @@
+<section class="cuisine-card" (click)="cardClick.emit()" role="button" tabindex="0" (keydown.enter)="cardClick.emit()">
+  <h3 class="cuisine-card__title">{{ name() }}</h3>
+
+  <div class="cuisine-card__image-wrapper">
+    <img [ngSrc]="imageUrl()" [alt]="name()" fill class="cuisine-card__image" />
+  </div>
+</section>

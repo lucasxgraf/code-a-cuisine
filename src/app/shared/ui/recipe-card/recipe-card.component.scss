@@ -1,0 +1,53 @@
+@use '../../../../styles/variables' as *;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.recipe-card {
+  @include flex-layout(column, flex-start, flex-start, 24px);
+  background-color: rgba($color-olive-green, 0.3);
+  border-radius: 20px;
+  padding: 32px 24px;
+  height: 100%;
+  min-height: 280px;
+  max-width: 350px;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  &__badge {
+    @include flex-layout(row, center, center, 8px);
+    font-family: $font-quicksand;
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: $color-middle-green;
+  }
+
+  &__title {
+    font-family: $font-quicksand;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $color-dark-green;
+  }
+
+  &__meta {
+    @include flex-layout(row, flex-start, center, 8px);
+    color: $color-olive-green;
+    font-family: $font-quicksand;
+    font-weight: 500;
+  }
+
+  &__time {
+    @include flex-layout(row, flex-start, center, 8px);
+  }
+
+  &__actions {
+    width: 100%;
+  }
+}

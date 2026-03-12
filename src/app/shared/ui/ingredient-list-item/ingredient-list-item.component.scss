@@ -1,0 +1,47 @@
+@use '../../../../styles/variables' as *;
+
+:host {
+  @include flex-layout(row, space-between, center);
+  padding: 8px;
+  list-style: none;
+}
+
+.ingredient-item {
+  @include flex-layout(row, space-between, center, 12px);
+  width: 100%;
+
+  &__content {
+    @include flex-layout(row, space-between, center, 8px);
+    font-family: $font-quicksand;
+    color: $color-dark-green;
+  }
+
+  &__bullet {
+    color: $color-middle-green;
+    font-size: 1.5rem;
+  }
+
+  &__amount, &__unit, &__name {
+    font-weight: 500;
+  }
+
+  &__actions {
+    @include flex-layout(row, space-between, center, 8px);
+  }
+
+  &__btn {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: $color-dark-green;
+    @include flex-layout();
+    transition: 
+    transform 0.3s ease, 
+    color 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}

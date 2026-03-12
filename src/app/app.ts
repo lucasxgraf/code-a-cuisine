@@ -1,10 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ChefsLabelComponent } from "./shared/ui/chefs-label/chefs-label.component";
+import { IngredientListItemComponent } from "./shared/ui/ingredient-list-item/ingredient-list-item.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ChefsLabelComponent],
+  imports: [RouterOutlet, IngredientListItemComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
