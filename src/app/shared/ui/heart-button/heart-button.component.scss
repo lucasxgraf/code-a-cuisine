@@ -1,0 +1,44 @@
+@use '../../../../styles/variables' as *;
+
+.heart-btn {
+  position: relative;
+  @include flex-layout();
+  width: 52px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &__background {
+    position: absolute;
+    inset: 0;
+    background-color: #D7DFD7;
+    border-radius: 5px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 0;
+  }
+
+  &:hover:not(.heart-btn--liked) &__background {
+    opacity: 0.6;
+  }
+
+  &__icon {
+    position: relative;
+    z-index: 1;
+  }
+
+  &--liked &__background {
+    display: none;
+  }
+}

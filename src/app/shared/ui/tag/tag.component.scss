@@ -1,0 +1,28 @@
+@use '../../../../styles/variables' as *;
+
+:host {
+  display: inline-block;
+}
+
+.tag {
+  @include flex-layout(row, center, center);
+  padding: 6px 12px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  font-family: $font-quicksand;
+  font-weight: 500;
+  color: $color-dark-green;
+
+  &--creme { 
+    background-color: $color-creme;
+
+    &:hover{
+      background-color: $color-sand;
+    }
+  }
+
+  &--green  { 
+    background-color: rgba($color-olive-green, 0.2);
+  }
+}

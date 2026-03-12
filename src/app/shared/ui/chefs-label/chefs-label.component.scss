@@ -1,0 +1,40 @@
+@use '../../../../styles/variables' as *;
+
+:host {
+  display: inline-block;
+}
+
+.chef-label {
+  @include flex-layout(row, center, center, 4px);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-family: $font-quicksand;
+  font-weight: 500;
+  color: $color-dark-green;
+
+  &__icon {
+    @include flex-layout(row, center, center);
+    width: 24px;
+    height: 24px;
+  }
+
+  &__text {
+    line-height: 1;
+  }
+
+  &--1 {
+    background-color: #D7DFD7;
+  }
+
+  &--2 {
+    background-color: #FFD9B3;
+  }
+
+  &--3 {
+    background-color: #CFD7004D;
+  }
+
+  &--4 {
+    background-color: #00800066;
+  }
+}

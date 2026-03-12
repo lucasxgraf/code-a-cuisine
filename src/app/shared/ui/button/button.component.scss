@@ -19,7 +19,7 @@
 
   &__arrow {
     font-size: 1.25rem;
-    transition: transform 0.2s;
+    transition: transform 0.3s;
   }
 
   &:hover &__arrow {
@@ -28,7 +28,7 @@
 
   &--primary-green {
     background-color: $color-olive-green;
-    color: $color-cream;
+    color: $color-creme;
 
     &:hover { 
       background-color: $color-middle-green; 
@@ -38,7 +38,7 @@
   }
   
   &--primary-creme {
-    background-color: $color-cream;
+    background-color: $color-creme;
     color: $color-middle-green;
     
     &:hover { 
@@ -57,11 +57,11 @@
   }
 
   &--secondary-creme {
-    color: $color-cream;
+    color: $color-creme;
     font-weight: 500;
 
     &:hover { 
-      background-color: rgba($color-cream, 0.8);
+      background-color: rgba($color-creme, 0.8);
     }
   }
 }
