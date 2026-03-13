@@ -20,6 +20,7 @@
   &__arrow {
     font-size: 1.25rem;
     transition: transform 0.3s;
+    color: inherit;
   }
 
   &:hover &__arrow {
@@ -58,9 +59,10 @@
   &--secondary-creme {
     color: $color-creme;
     font-weight: 500;
+    color: $color-creme;
 
     &:hover { 
-      background-color: rgba($color-creme, 0.8);
+      background-color: rgba($color-creme, 0.2);
     }
   }
 }
