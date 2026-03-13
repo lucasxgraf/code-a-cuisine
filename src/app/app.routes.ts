@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { HeroComponent } from './features/hero/hero.component';
+import { GenerateInputUserComponent } from './features/generator/generate-input-user/generate-input-user.component';
 
 export const routes: Routes = [
   { 
@@ -11,6 +12,19 @@ export const routes: Routes = [
       hideFooter: true,
     } 
   },
+  { 
+    path: 'generate-input-user', 
+    component: GenerateInputUserComponent, 
+    data: {
+      headerTheme: 'creme-logo',
+      backLink: true, 
+      backTarget: '/', 
+      backLabel: 'Back to home' 
+    } 
+  },
+
+
+
   // { 
   //   path: 'cookbook', 
   //   component: CookbookComponent, 
