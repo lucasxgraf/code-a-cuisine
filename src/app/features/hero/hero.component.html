@@ -1,1 +1,39 @@
-<p>hero.component works!</p>
+<section class="hero">
+  <div class="hero__container container">
+
+    <div class="hero__content">
+      <div class="hero__content__wrapper">
+        <header class="hero__header">
+          <p class="hero__subtitle">AI-Powered recipe generator</p>
+          <h1 class="hero__title">Code à Cuisine</h1>
+        </header>
+
+        <div class="hero__actions">
+          <app-button colorScheme="creme">
+            Get started
+          </app-button>
+        </div>
+      </div>
+
+      <footer class="hero__footer">
+        <span class="hero__footer-text">Hungry for inspiration?</span>
+        <app-button variant="secondary" colorScheme="creme">
+          Go to cookbook
+        </app-button>
+      </footer>
+    </div>
+
+    <div class="hero__visual">
+      <div class="hero__plate hero__plate--1">
+        <img ngSrc="assets/svg/hero/dish_1.svg" width="420" height="415" alt="" priority />
+      </div>
+      <div class="hero__plate hero__plate--2">
+        <img ngSrc="assets/svg/hero/dish_2.svg" width="420" height="415" alt="Healthy salmon" priority />
+      </div>
+      <div class="hero__plate hero__plate--3">
+        <img ngSrc="assets/svg/hero/dish_3.svg" width="420" height="415" alt="Steak and salad" priority />
+      </div>
+    </div>
+
+  </div>
+</section>

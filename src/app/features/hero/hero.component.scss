@@ -1,0 +1,80 @@
+@use '../../../styles/variables' as *;
+
+.hero {
+  height: 100vh; 
+  width: 100%;
+  @include flex-layout(row, space-between, center);
+  overflow: hidden;
+  color: $color-creme;
+  background-color: $color-olive-green;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  &__container {
+    @include flex-layout(row, space-between, center);
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding-top: 112px;
+  }
+  
+  &__content {
+    flex: 0 0 auto;
+    z-index: 10;
+    @include flex-layout(column, space-between, flex-start, 48px);
+    height: 60vh;
+
+    &__wrapper {
+      @include flex-layout(column, flex-start, flex-start, 48px);
+    }
+  }
+
+  &__subtitle {
+    font-family: $font-quicksand;
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+
+  &__title {
+    font-family: $font-ubuntu;
+    font-size: 6rem;
+    font-weight: 700;
+  }
+
+  &__footer {
+    @include flex-layout(row, center, center, 24px);
+    
+    &-text {
+      font-family: $font-ubuntu;
+      font-weight: 500;
+      font-size: 2rem;
+    }
+  }
+
+  &__visual {
+    position: absolute;
+    right: 0;
+    top: 0; 
+    height: 100vh;
+    @include flex-layout(column, center, center);
+    pointer-events: none; 
+    z-index: 5;
+  }
+
+  &__plate {
+    @include flex-layout(column, center, center);
+
+    img {
+      height: 48vh;
+      width: auto;
+      object-fit: cover;
+      filter: drop-shadow(-20px 20px 30px rgba(0,0,0,0.3));
+    }
+
+    &--1 { z-index: 1; }
+    &--2 { z-index: 2; margin-top: -22vh}
+    &--3 { z-index: 3; margin-top: -22vh}
+  }
+}

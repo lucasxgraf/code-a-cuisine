@@ -3,6 +3,8 @@
 .header {
   padding: 40px;
   @include flex-layout($direction: column, $ai: flex-start, $g: 16px);
+  position: relative;
+  z-index: 1000;
 
   &__logo {
     text-decoration: none;

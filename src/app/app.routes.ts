@@ -6,8 +6,9 @@ export const routes: Routes = [
     path: '', 
     component: HeroComponent, 
     data: {
-      headerTheme: 'green-logo',
+      headerTheme: 'creme-logo',
       backLink: false, 
+      hideFooter: true,
     } 
   },
   // { 
