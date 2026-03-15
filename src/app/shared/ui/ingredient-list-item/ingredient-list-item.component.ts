@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-ingredient-list-item',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './ingredient-list-item.component.html',
   styleUrl: './ingredient-list-item.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -12,6 +13,23 @@ export class IngredientListItemComponent {
   unit = input<string>('');
   name = input.required<string>();
 
-  edit = output<void>();
   remove = output<void>();
+  update = output<{ amount: number | string, unit: string }>();
+
+  isEditing = signal(false);
+  editAmount: number | string = '';
+  editUnit: string = '';
+
+  protected displayQuantity = computed(() => `${this.amount()} ${this.unit()}`);
+
+  startEdit() {
+    this.editAmount = this.amount();
+    this.editUnit = this.unit();
+    this.isEditing.set(true);
+  }
+
+  saveEdit() {
+    this.update.emit({ amount: this.editAmount, unit: this.editUnit });
+    this.isEditing.set(false);
+  }
 }

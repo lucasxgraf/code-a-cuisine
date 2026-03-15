@@ -2,16 +2,13 @@
 
 :host {
   @include flex-layout(row, space-between, center);
-  padding: 8px;
+  padding: 8px 0;
   list-style: none;
 }
 
 .ingredient-item {
-  @include flex-layout(row, space-between, center, 12px);
-  width: 100%;
-
   &__content {
-    @include flex-layout(row, space-between, center, 8px);
+    @include flex-layout(row, center, center, 12px);
     font-family: $font-quicksand;
     color: $color-dark-green;
   }
@@ -21,27 +18,81 @@
     font-size: 1.5rem;
   }
 
-  &__amount, &__unit, &__name {
+  &__quantity {
+    font-weight: 500;
+    min-width: 60px;
+  }
+
+  &__name {
     font-weight: 500;
   }
 
   &__actions {
-    @include flex-layout(row, space-between, center, 8px);
+    @include flex-layout(row, center, center, 16px);
   }
 
   &__btn {
     background: none;
     border: none;
-    padding: 4px;
     cursor: pointer;
     color: $color-dark-green;
     @include flex-layout();
     transition: 
-    transform 0.3s ease, 
-    color 0.3s ease;
+      transform 0.3s ease, 
+      color 0.3s ease;
 
     &:hover {
       transform: scale(1.1);
+      color: $color-middle-green;
     }
+
+    &--save {
+      color: $color-middle-green;
+    }
+  }
+
+  &__edit-input {
+    width: 70px;
+    height: 32px;
+    border: none;
+    border-radius: 20px;
+    background-color: $color-creme;
+    padding: 0 12px;
+    font-family: $font-quicksand;
+    color: $color-dark-green;
+    text-align: center;
+
+    &:focus {
+      outline: 1.5px solid $color-middle-green;
+    }
+  }
+
+  &__edit-select-wrapper {
+    position: relative;
+    height: 32px;
+    background-color: $color-creme;
+    border-radius: 20px;
+    padding: 0 24px 0 12px;
+    @include flex-layout($ai: center);
+
+    &:focus-within {
+      outline: 1.5px solid $color-middle-green;
+    }
+  }
+
+  &__edit-select {
+    appearance: none;
+    border: none;
+    background: transparent;
+    font-family: $font-quicksand;
+    color: $color-dark-green;
+    cursor: pointer;
+    outline: none;
+  }
+
+  &__select-icon {
+    position: absolute;
+    right: 10px;
+    pointer-events: none;
   }
 }

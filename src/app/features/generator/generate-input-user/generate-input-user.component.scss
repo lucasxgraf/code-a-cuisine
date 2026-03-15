@@ -1,0 +1,162 @@
+@use '../../../../styles/variables' as *;
+
+.generate-input {
+  &__header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  &__title {
+    font-family: $font-quicksand;
+    font-size: 3rem;
+    font-weight: 600;
+    color: $color-middle-green;
+    margin-bottom: 24px;
+  }
+
+  &__subtitle {
+    font-family: $font-quicksand;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: $color-dark-green;
+  }
+
+  &__grid {
+    @include flex-layout(row, center, flex-start, 32px);
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  &__card {
+    background-color: rgba($color-olive-green, 0.25);
+    border-radius: 24px;
+    padding: 32px;
+    min-height: 220px;
+
+    &--input { flex: 2; }
+    &--list { flex: 1; }
+  }
+
+  &__form-row {
+    @include flex-layout(row, space-between, flex-end, 32px);
+    width: 100%;
+  }
+
+  &__field {
+    &--ingredient { flex: 1.5; }
+    &--size { flex: 1; }
+  }
+
+  &__label {
+    display: block;
+    font-family: $font-quicksand;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: $color-dark-green;
+    margin-bottom: 16px;
+  }
+
+  &__autocomplete-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  &__input {
+    height: 48px;
+    width: 100%;
+    border: none;
+    border-radius: 100px;
+    background-color: $color-creme;
+    padding: 8px 24px;
+    font-family: $font-quicksand;
+    color: $color-dark-green;
+    box-sizing: border-box;
+
+    &--amount {
+      min-width: 80px;
+      text-align: center;
+      padding: 0;
+    }
+    
+    &:focus { outline: 2px solid $color-middle-green; }
+  }
+
+  &__size-group {
+    @include flex-layout(row, flex-start, center, 16px);
+  }
+
+  &__select-wrapper {
+    position: relative;
+    cursor: pointer;
+    @include flex-layout(row, space-between, center, 8px);
+  }
+
+  &__icon {
+    transition: transform 0.3s ease;
+
+    &--rotated { 
+      transform: rotate(180deg); 
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 100%;
+    background: transparent;
+    list-style: none;
+    z-index: 50;
+    @include flex-layout(column, flex-start, flex-start, 4px);
+  }
+
+  &__dropdown-item {
+    width: 100%;
+    padding: 2px 16px;
+    font-family: $font-quicksand;
+    color: $color-dark-green;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: rgba($color-middle-green, 0.2);
+    }
+  }
+
+  &__add-btn {
+    background: none;
+    border: none;
+    font-size: 2.5rem;
+    color: $color-dark-green;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    
+    &:hover { 
+      transform: scale(1.15); 
+      color: $color-middle-green; 
+    }
+  }
+
+  &__card-title {
+    font-family: $font-quicksand;
+    font-size: 1.3rem;
+    color: $color-olive-green;
+    margin-bottom: 24px;
+    font-weight: 600;
+  }
+
+  &__empty {
+    font-family: $font-quicksand;
+    color: $color-olive-green;
+    opacity: 0.7;
+    font-style: italic;
+    text-align: center;
+  }
+
+  &__footer {
+    @include flex-layout(row, flex-end, center);
+    margin-top: 48px;
+    width: 100%;
+  }
+}

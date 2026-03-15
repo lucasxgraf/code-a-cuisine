@@ -1,1 +1,96 @@
-<p>generate-input-user.component works!</p>
+<div class="generate-input container">
+  <header class="generate-input__header">
+    <h1 class="generate-input__title">Generate recipe</h1>
+    <p class="generate-input__subtitle">
+      Got random stuff in your kitchen? Pop it in—we’ve got the perfect recipe waiting.
+    </p>
+  </header>
+
+  <div class="generate-input__grid">
+    <section class="generate-input__card generate-input__card--input" [formGroup]="ingredientForm">
+      <div class="generate-input__form-row">
+        <div class="generate-input__field generate-input__field--ingredient">
+          <label class="generate-input__label">Ingredient</label>
+          <div class="generate-input__autocomplete-wrapper">
+            <input 
+              type="text" 
+              formControlName="name" 
+              placeholder="Pasta"
+              class="generate-input__input" 
+              (input)="toggleIngredientDropdown($event)"
+              (click)="toggleIngredientDropdown($event)"
+              (keydown.enter)="addIngredient()"
+            >
+            @if (isIngredientDropdownOpen() && filteredIngredients().length > 0) {
+              <ul class="generate-input__dropdown">
+                @for (item of filteredIngredients(); track item) {
+                  <li class="generate-input__dropdown-item" (click)="selectIngredient(item)">
+                    {{ item }}
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        </div>
+
+        <div class="generate-input__field generate-input__field--size">
+          <label class="generate-input__label">Serving size</label>
+          <div class="generate-input__size-group">
+            <input type="number" formControlName="amount" class="generate-input__input generate-input__input--amount">
+            <div class="generate-input__select-wrapper generate-input__input" (click)="toggleUnitDropdown($event)">
+              <span class="generate-input__selected-value">
+                {{ ingredientForm.controls.unit.value }}
+              </span>
+              <svg 
+                [class.generate-input__icon--rotated]="isUnitDropdownOpen()"
+                class="generate-input__icon" width="10" height="5" viewBox="0 0 10 5" fill="none"
+              >
+                <path d="M5 5L10 0L0 0L5 5Z" fill="#10310B"/>
+              </svg>
+
+              @if (isUnitDropdownOpen()) {
+                <ul class="generate-input__dropdown">
+                  @for (unit of units; track unit) {
+                    <li class="generate-input__dropdown-item" (click)="selectUnit(unit,  $event)">
+                      {{ unit }}
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+            <button type="button" class="generate-input__add-btn" (click)="addIngredient()">+</button>
+          </div>
+        </div>
+        
+      </div>
+    </section>
+
+    <section class="generate-input__card generate-input__card--list">
+      <h2 class="generate-input__card-title">List of your Ingredients</h2>
+      <ul class="generate-input__list">
+        @for (ing of ingredients(); track ing.id) {
+          <app-ingredient-list-item 
+            [amount]="ing.amount" 
+            [unit]="ing.unit" 
+            [name]="ing.name"
+            (remove)="removeIngredient(ing.id)"
+            (update)="updateIngredient(ing.id, $event)" 
+          />
+        } @empty {
+          <p class="generate-input__empty">No ingredients added yet.</p>
+        }
+      </ul>
+    </section>
+  </div>
+
+  <footer class="generate-input__footer">
+    <app-button 
+      variant="primary" 
+      colorScheme="green" 
+      (click)="nextStep()"
+      [style.visibility]="ingredients().length > 0 ? 'visible' : 'hidden'"
+    >
+      Next step
+    </app-button>
+  </footer>
+</div>

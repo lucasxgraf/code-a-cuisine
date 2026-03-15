@@ -16,10 +16,8 @@ export const routes: Routes = [
     path: 'generate-input-user', 
     component: GenerateInputUserComponent, 
     data: {
-      headerTheme: 'creme-logo',
-      backLink: true, 
-      backTarget: '/', 
-      backLabel: 'Back to home' 
+      headerTheme: 'green-logo',
+      backLink: false, 
     } 
   },
 
