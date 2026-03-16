@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-ingredient-list-item',
+  standalone: true,
   imports: [FormsModule],
   templateUrl: './ingredient-list-item.component.html',
   styleUrl: './ingredient-list-item.component.scss',
@@ -17,6 +18,8 @@ export class IngredientListItemComponent {
   update = output<{ amount: number | string, unit: string }>();
 
   isEditing = signal(false);
+  isDropdownOpen = signal(false);
+  
   editAmount: number | string = '';
   editUnit: string = '';
 
@@ -26,6 +29,17 @@ export class IngredientListItemComponent {
     this.editAmount = this.amount();
     this.editUnit = this.unit();
     this.isEditing.set(true);
+  }
+
+  toggleDropdown(event: Event) {
+    event.stopPropagation();
+    this.isDropdownOpen.update(v => !v);
+  }
+
+  selectUnit(unit: string, event: Event) {
+    event.stopPropagation();
+    this.editUnit = unit;
+    this.isDropdownOpen.set(false);
   }
 
   saveEdit() {

@@ -24,7 +24,7 @@
             @if (isIngredientDropdownOpen() && filteredIngredients().length > 0) {
               <ul class="generate-input__dropdown">
                 @for (item of filteredIngredients(); track item) {
-                  <li class="generate-input__dropdown-item" (click)="selectIngredient(item)">
+                  <li class="generate-input__dropdown-item" (click)="selectIngredient(item, $event)">
                     {{ item }}
                   </li>
                 }

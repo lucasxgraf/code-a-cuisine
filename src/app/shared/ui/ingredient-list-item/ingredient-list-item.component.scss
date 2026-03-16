@@ -1,98 +1,113 @@
 @use '../../../../styles/variables' as *;
 
 :host {
-  @include flex-layout(row, space-between, center);
-  padding: 8px 0;
-  list-style: none;
+  @include flex-layout(row, space-between, flex-start);
+  position: relative;
+  min-height: 40px;
 }
 
 .ingredient-item {
   &__content {
-    @include flex-layout(row, center, center, 12px);
+    @include flex-layout(row, flex-start, flex-start, 12px);
     font-family: $font-quicksand;
     color: $color-dark-green;
+    flex: 1;
   }
 
   &__bullet {
     color: $color-middle-green;
     font-size: 1.5rem;
+    line-height: 1;
+    margin-top: 4px;
   }
 
-  &__quantity {
+  &__quantity, &__name {
     font-weight: 500;
-    min-width: 60px;
-  }
-
-  &__name {
-    font-weight: 500;
+    font-size: 1.1rem;
+    margin-top: 8px;
   }
 
   &__actions {
-    @include flex-layout(row, center, center, 16px);
+    @include flex-layout(row, center, center, 8px);
+    margin-top: 4px;
   }
 
   &__btn {
-    background: none;
-    border: none;
-    cursor: pointer;
+    background: none; 
+    border: none; 
+    padding: 6px; 
+    cursor: pointer; 
     color: $color-dark-green;
-    @include flex-layout();
-    transition: 
-      transform 0.3s ease, 
-      color 0.3s ease;
-
-    &:hover {
-      transform: scale(1.1);
-      color: $color-middle-green;
-    }
-
-    &--save {
-      color: $color-middle-green;
-    }
+    @include flex-layout(); 
+    transition: transform 0.3s ease;
   }
 
   &__edit-input {
+    height: 40px;
     width: 70px;
-    height: 32px;
     border: none;
     border-radius: 20px;
     background-color: $color-creme;
-    padding: 0 12px;
     font-family: $font-quicksand;
     color: $color-dark-green;
     text-align: center;
 
-    &:focus {
-      outline: 1.5px solid $color-middle-green;
+    &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+      &[type=number] {
+        -moz-appearance: textfield;
+      }
+
+    &:focus { 
+      outline: 2px solid $color-middle-green; 
+      outline-offset: -2px; 
     }
   }
 
-  &__edit-select-wrapper {
-    position: relative;
-    height: 32px;
+  &__edit-select-container {
+    @include flex-layout(column, flex-start, center);
+  }
+
+  &__edit-select-pill {
+    height: 40px;
     background-color: $color-creme;
     border-radius: 20px;
-    padding: 0 24px 0 12px;
-    @include flex-layout($ai: center);
-
-    &:focus-within {
-      outline: 1.5px solid $color-middle-green;
-    }
-  }
-
-  &__edit-select {
-    appearance: none;
-    border: none;
-    background: transparent;
-    font-family: $font-quicksand;
-    color: $color-dark-green;
+    padding: 0 16px;
+    min-width: 90px;
     cursor: pointer;
-    outline: none;
+    @include flex-layout(row, space-between, center, 8px);
+    transition: outline 0.3s ease;
+    &:focus-within { outline: 1.5px solid $color-middle-green; }
   }
 
   &__select-icon {
-    position: absolute;
-    right: 10px;
-    pointer-events: none;
+    transition: transform 0.3s ease;
+    &--rotated { transform: rotate(180deg); }
+  }
+
+  &__dropdown {
+    width: 100%;
+    list-style: none;
+    padding: 4px 0;
+    margin-top: 4px;
+    @include flex-layout(column, flex-start, center, 2px);
+    background: transparent;
+  }
+
+  &__dropdown-item {
+    width: 100%;
+    padding: 2px 8px;
+    font-family: $font-quicksand;
+    color: $color-dark-green;
+    cursor: pointer;
+    border-radius: 20px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+
+    &:hover { 
+      background-color: rgba($color-middle-green, 0.1); 
+    }
   }
 }

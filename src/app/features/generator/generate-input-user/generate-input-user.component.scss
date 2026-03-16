@@ -11,7 +11,7 @@
     font-size: 3rem;
     font-weight: 600;
     color: $color-middle-green;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
   }
 
   &__subtitle {
@@ -65,7 +65,7 @@
     height: 48px;
     width: 100%;
     border: none;
-    border-radius: 100px;
+    border-radius: 20px;
     background-color: $color-creme;
     padding: 8px 24px;
     font-family: $font-quicksand;
@@ -76,6 +76,14 @@
       min-width: 80px;
       text-align: center;
       padding: 0;
+      
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+      &[type=number] {
+        -moz-appearance: textfield;
+      }
     }
     
     &:focus { outline: 2px solid $color-middle-green; }
@@ -140,10 +148,27 @@
 
   &__card-title {
     font-family: $font-quicksand;
-    font-size: 1.3rem;
     color: $color-olive-green;
-    margin-bottom: 24px;
-    font-weight: 600;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  &__list {
+    max-height: 184px;
+    overflow-y: auto;
+    // padding-right: 16px;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background: rgba($color-olive-green, 0.1);
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: $color-middle-green;
+      border-radius: 4px;
+    }
   }
 
   &__empty {
@@ -156,7 +181,7 @@
 
   &__footer {
     @include flex-layout(row, flex-end, center);
-    margin-top: 48px;
+    margin-top: 40px;
     width: 100%;
   }
 }
