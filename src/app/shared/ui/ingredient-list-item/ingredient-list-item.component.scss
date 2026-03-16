@@ -56,9 +56,6 @@
       &::-webkit-inner-spin-button {
         -webkit-appearance: none;
       }
-      &[type=number] {
-        -moz-appearance: textfield;
-      }
 
     &:focus { 
       outline: 2px solid $color-middle-green; 
@@ -103,7 +100,7 @@
     color: $color-dark-green;
     cursor: pointer;
     border-radius: 20px;
-    text-align: center;
+    text-align: start;
     transition: background-color 0.3s ease;
 
     &:hover { 

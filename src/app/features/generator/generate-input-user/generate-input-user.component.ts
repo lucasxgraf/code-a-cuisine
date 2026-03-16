@@ -5,8 +5,9 @@ import { toSignal } from '@angular/core/rxjs-interop'; // Wichtig
 import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs'; // Wichtig
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { IngredientListItemComponent } from '../../../shared/ui/ingredient-list-item/ingredient-list-item.component';
-import { Ingredient } from '../../../core/models/ingredient.model';
+import { Ingredient } from '../../../core/models/recepie.model';
 import { IngredientService } from '../../../core/services/ingredient.service';
+import { RecipeGeneratorService } from '../../../core/services/recipe-generator.service';
 
 @Component({
   selector: 'app-generate-input-user',
@@ -22,6 +23,7 @@ import { IngredientService } from '../../../core/services/ingredient.service';
 export class GenerateInputUserComponent {
   private router = inject(Router);
   private ingredientService = inject(IngredientService);
+  private generatorService = inject(RecipeGeneratorService);
 
   ingredientForm = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -29,7 +31,7 @@ export class GenerateInputUserComponent {
     unit: new FormControl('gram', { nonNullable: true }),
   });
 
-  ingredients = signal<Ingredient[]>([]);
+  ingredients = this.generatorService.ingredients;
   isUnitDropdownOpen = signal(false);
   isIngredientDropdownOpen = signal(false);
   units: string[] = ['piece', 'ml', 'gram'];
@@ -97,7 +99,7 @@ export class GenerateInputUserComponent {
 
   nextStep(): void {
     if (this.ingredients().length > 0) {
-      this.router.navigate(['/']);
+      this.router.navigate(['/preferences']);
     }
   }
 }

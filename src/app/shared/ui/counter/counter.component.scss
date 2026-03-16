@@ -13,8 +13,18 @@
   &__controls {
     @include flex-layout(row, space-between, center, 16px);
 
-    svg {
+    button {
       cursor: pointer;
+      outline: none;
+      border: none;
+      background-color: transparent;
+
+      &:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        border-color: white;
+        color: white;
+      }
     }
   }
 

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TagComponent } from '../tag/tag.component';
+import { SelectionOption } from '../../../core/models/recepie.model';
 
 @Component({
   selector: 'app-selection-group',
@@ -12,7 +13,7 @@ import { TagComponent } from '../tag/tag.component';
 export class SelectionGroupComponent {
   label = input.required<string>();
   icon = input<string>();
-  options = input.required<string[]>();
+  options = input.required<SelectionOption[]>();
   activeOption = input.required<string>();
 
   select = output<string>();

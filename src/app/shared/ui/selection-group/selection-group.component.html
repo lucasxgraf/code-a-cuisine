@@ -1,19 +1,22 @@
 <div class="selection-group">
-      <h3 class="selection-group__title">
-        <span class="selection-group__icon" aria-hidden="true">
-          <ng-content select="[icon]"></ng-content>
-        </span>
-        {{ label() }}
-      </h3>
-      
-      <div class="selection-group__tags">
-        @for (option of options(); track option) {
-          <app-tag 
-            [variant]="activeOption() === option ? 'green' : 'creme'"
-            (click)="select.emit(option)"
-          >
-            {{ option }}
-          </app-tag>
-        }
-      </div>
+  <h3 class="selection-group__title">
+    <span class="selection-group__icon" aria-hidden="true">
+      <ng-content select="[icon]"></ng-content>
+    </span>
+    {{ label() }}
+  </h3>
+
+  <div class="selection-group__items">
+    @for (opt of options(); track opt.label) {
+    <div class="selection-group__item">
+      <app-tag [variant]="activeOption() === opt.label ? 'green' : 'creme'" (click)="select.emit(opt.label)">
+        {{ opt.label }}
+      </app-tag>
+
+      @if (opt.sub !== undefined) {
+      <span class="selection-group__sub">{{ opt.sub }}</span>
+      }
     </div>
+    }
+  </div>
+</div>

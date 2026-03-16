@@ -13,6 +13,9 @@ export class CounterComponent {
   value = input.required<number>();
   unit = input.required<string>();
   
+  min = input<number>(1);
+  max = input<number>(100);
+  
   changed = output<number>();
 
   protected unitLabel = computed(() => {
