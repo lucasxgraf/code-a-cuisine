@@ -1,0 +1,19 @@
+<div class="selection-group">
+      <h3 class="selection-group__title">
+        <span class="selection-group__icon" aria-hidden="true">
+          <ng-content select="[icon]"></ng-content>
+        </span>
+        {{ label() }}
+      </h3>
+      
+      <div class="selection-group__tags">
+        @for (option of options(); track option) {
+          <app-tag 
+            [variant]="activeOption() === option ? 'green' : 'creme'"
+            (click)="select.emit(option)"
+          >
+            {{ option }}
+          </app-tag>
+        }
+      </div>
+    </div>

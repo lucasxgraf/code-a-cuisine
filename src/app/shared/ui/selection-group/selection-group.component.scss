@@ -1,0 +1,32 @@
+@use '../../../../styles/variables' as *;
+
+.selection-group {
+  margin-bottom: 40px;
+  @include flex-layout(column, center, flex-start, 24px);
+
+
+  &__title {
+    font-family: $font-quicksand;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: $color-dark-green;
+    @include flex-layout(row, center, flex-start, 8px);
+  }
+
+  &__icon {
+    @include flex-layout();
+    width: 24px;
+    height: 24px;
+    color: $color-middle-green;
+
+    ::ng-deep svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    &__tags {
+      @include flex-layout(row, center, flex-start, 16px);
+      flex-wrap: wrap;
+    }
+  }
+}
