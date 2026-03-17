@@ -99,7 +99,7 @@ export class GenerateInputUserComponent {
 
   nextStep(): void {
     if (this.ingredients().length > 0) {
-      this.router.navigate(['/preferences']);
+      this.router.navigate(['/generate-preferences']);
     }
   }
 }

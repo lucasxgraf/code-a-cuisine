@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { HeroComponent } from './features/hero/hero.component';
 import { GenerateInputUserComponent } from './features/generator/generate-input-user/generate-input-user.component';
 import { PreferencesComponent } from './features/generator/preferences/preferences.component';
+import { LoadingComponent } from './features/generator/loading/loading.component';
+import { ResultComponent } from './features/generator/result/result.component';
 
 export const routes: Routes = [
   { 
@@ -22,13 +24,31 @@ export const routes: Routes = [
     } 
   },
   { 
-    path: 'preferences', 
+    path: 'generate-preferences', 
     component: PreferencesComponent, 
     data: {
       headerTheme: 'green-logo',
       backLink: true,
       backTarget: '/generate-input-user', 
       backLabel: 'Ingredients'
+    } 
+  },
+  { 
+    path: 'generate-loading', 
+    component: LoadingComponent, 
+    data: {
+      headerTheme: 'creme-logo',
+      backLink: false,
+      hideFooter: true,
+    } 
+  },
+  { 
+    path: 'generate-result', 
+    component: ResultComponent, 
+    data: {
+      headerTheme: 'creme-logo',
+      backLink: false,
+      hideFooter: false,
     } 
   },
 

@@ -1,0 +1,20 @@
+<div class="loading" role="status" aria-live="polite">
+  <div class="loading__content">
+    <div class="loading__visual">
+      <img ngSrc="assets/gif/loading_spinner.gif" width="436" height="613" alt="AI is creating your recipes" priority>
+    </div>
+
+    <h1 class="loading__text">
+      Generating<span class="loading__dots"></span>
+    </h1>
+  </div>
+
+  @if (showError()) {
+    <app-error-modal 
+      title="Ups! Not quite enough..."
+      message="It looks like some ingredient quantities aren't sufficient for your selected servings. Please add or adjust quantities and try again."
+      actionLabel="Go back to ingredients"
+      (close)="handleErrorClose()"
+    />
+  }
+</div>
