@@ -1,0 +1,57 @@
+@use '../../../../styles/variables' as *;
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  @include flex-layout(column, center, center);
+}
+
+.modal {
+  background-color: $color-olive-green;
+  color: $color-creme;
+  padding: 64px;
+  border-radius: 30px;
+  width: 100%;
+  max-width: 580px;
+  position: relative;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+}
+
+.modal__close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  color: $color-creme;
+  cursor: pointer;
+  padding: 8px;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.modal__body {
+  @include flex-layout(column, center, flex-start, 24px);
+  color: $color-creme;
+}
+
+.modal__title {
+  font-family: $font-quicksand;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.modal__text {
+  font-family: $font-quicksand;
+  font-size: 1.25rem;
+}

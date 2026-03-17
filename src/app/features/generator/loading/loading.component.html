@@ -8,4 +8,13 @@
       Generating<span class="loading__dots"></span>
     </h1>
   </div>
+
+  @if (showError()) {
+    <app-error-modal 
+      title="Ups! Not quite enough..."
+      message="It looks like some ingredient quantities aren't sufficient for your selected servings. Please add or adjust quantities and try again."
+      actionLabel="Go back to ingredients"
+      (close)="handleErrorClose()"
+    />
+  }
 </div>
