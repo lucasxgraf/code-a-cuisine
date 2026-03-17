@@ -23,7 +23,7 @@ export class ResultComponent {
   ]);
 
   onViewRecipe(id: string) {
-    this.router.navigate(['/recipe', id]);
+    this.router.navigate(['/recipe-detail']);
   }
 
   generateNew() {

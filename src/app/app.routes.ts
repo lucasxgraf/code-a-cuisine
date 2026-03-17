@@ -4,6 +4,7 @@ import { GenerateInputUserComponent } from './features/generator/generate-input-
 import { PreferencesComponent } from './features/generator/preferences/preferences.component';
 import { LoadingComponent } from './features/generator/loading/loading.component';
 import { ResultComponent } from './features/generator/result/result.component';
+import { RecipeDetailComponent } from './features/recipe-detail/recipe-detail.component';
 
 export const routes: Routes = [
   { 
@@ -49,6 +50,17 @@ export const routes: Routes = [
       headerTheme: 'creme-logo',
       backLink: false,
       hideFooter: false,
+    } 
+  },
+  { 
+    path: 'recipe-detail', 
+    component: RecipeDetailComponent, 
+    data: {
+      headerTheme: 'green-logo',
+      backLink: true,
+      hideFooter: false,
+      backTarget: '/generate-result',
+      backLabel: 'Recipe results'
     } 
   },
 
