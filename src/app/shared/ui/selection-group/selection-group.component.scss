@@ -1,0 +1,55 @@
+@use '../../../../styles/variables' as *;
+
+:host {
+  display: block;
+
+  &:last-child .selection-group {
+    margin-bottom: 0;
+  }
+}
+
+.selection-group {
+  @include flex-layout(column, flex-start, flex-start, 24px);
+  margin-bottom: 40px;
+
+  &__title {
+    font-family: $font-quicksand;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: $color-dark-green;
+    @include flex-layout(row, center, center, 8px);
+    margin: 0;
+  }
+
+  &__icon {
+    @include flex-layout();
+    width: 24px;
+    height: 24px;
+    color: $color-middle-green;
+
+    ::ng-deep svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  }
+
+  &__items {
+    @include flex-layout(row, flex-start, flex-start, 20px);
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  &__item {
+    @include flex-layout(column, center, center, 8px);
+    min-width: 80px;
+  }
+
+  &__sub {
+    font-family: $font-quicksand;
+    font-weight: 500;
+    color: $color-olive-green;
+    opacity: 0.8;
+    white-space: nowrap;
+  }
+}

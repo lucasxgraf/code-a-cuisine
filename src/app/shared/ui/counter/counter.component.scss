@@ -1,0 +1,41 @@
+@use '../../../../styles/variables' as *;
+
+.counter {
+  @include flex-layout(column, center, flex-start, 16px);
+
+  &__label {
+    font-family: $font-quicksand;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: $color-dark-green;
+  }
+
+  &__controls {
+    @include flex-layout(row, space-between, center, 16px);
+
+    button {
+      cursor: pointer;
+      outline: none;
+      border: none;
+      background-color: transparent;
+
+      &:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        border-color: white;
+        color: white;
+      }
+    }
+  }
+
+  &__display {
+    background-color: $color-creme;
+    padding: 8px 16px;
+    border-radius: 12px;
+    min-width: 100px;
+    @include flex-layout(row, center, center, 8px);
+    font-family: $font-quicksand;
+    font-weight: 600;
+    color: $color-dark-green;
+  }
+}
