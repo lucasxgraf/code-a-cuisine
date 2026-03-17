@@ -2,11 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
-
-interface SpoonacularIngredient {
-  name: string;
-  image: string;
-}
+import { SpoonacularIngredient } from '../models/recepie.model';
 
 @Injectable({
   providedIn: 'root'

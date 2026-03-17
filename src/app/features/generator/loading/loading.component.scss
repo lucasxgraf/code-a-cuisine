@@ -18,7 +18,7 @@
 
   &__content {
     @include flex-layout(column, center, center, 32px);
-    margin-top: -100px;
+    margin-top: -200px;
   }
 
   &__visual {
