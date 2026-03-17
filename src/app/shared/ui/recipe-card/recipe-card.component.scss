@@ -7,7 +7,7 @@
 
 .recipe-card {
   @include flex-layout(column, flex-start, flex-start, 24px);
-  background-color: rgba($color-olive-green, 0.3);
+  background-color: #DBE0DB;
   border-radius: 20px;
   padding: 32px 24px;
   height: 100%;
@@ -19,6 +19,7 @@
 
   &:hover {
     transform: translateY(-4px);
+    background-color: #D7DFD7E5;
   }
 
   &__badge {

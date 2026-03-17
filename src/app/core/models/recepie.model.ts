@@ -5,6 +5,11 @@ export interface Ingredient {
   unit: string;
 }
 
+export interface SpoonacularIngredient {
+  name: string;
+  image: string;
+}
+
 export interface SelectionOption {
   label: string;
   sub?: string;

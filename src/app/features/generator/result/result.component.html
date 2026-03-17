@@ -1,1 +1,51 @@
-<p>result.component works!</p>
+<div class="results">
+  <div class="container">
+    <header class="results__header">
+      <div class="results__info">
+        <h1 class="results__title">The recipe results</h1>
+        <p class="results__description">
+          We took what you have and let our AI do the thinking. <br>
+          Here are 3 easy recipes you can make right now!
+        </p>
+        
+        <div class="results__filters">
+          <app-tag variant="creme">Italian</app-tag>
+          <app-tag variant="creme">Quick</app-tag>
+        </div>
+      </div>
+
+      <div class="results__visual">
+        <img 
+          ngSrc="assets/img/robot-hand.png" 
+          width="1536" 
+          height="1024" 
+          alt="AI serving food" 
+          priority
+          class="results__robot-img"
+        >
+      </div>
+    </header>
+
+    <section class="results__grid">
+      @for (recipe of recipes(); track recipe.id; let i = $index) {
+        <app-recipe-card 
+          [recipeNumber]="i + 1"
+          [title]="recipe.title"
+          [cookingTime]="recipe.time"
+          (viewDetails)="onViewRecipe(recipe.id)"
+        />
+      }
+    </section>
+
+    <footer class="results__footer">
+      <app-button 
+        variant="secondary" 
+        colorScheme="creme" 
+        (click)="generateNew()"
+      >
+        Generate new recipe
+      </app-button>
+    </footer>
+
+  </div>
+</div>

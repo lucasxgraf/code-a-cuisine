@@ -1,12 +1,13 @@
 @use './styles/variables' as *;
 
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   font-size: 16px;
   font-family: $font-ubuntu;
   height: 100%;
@@ -18,10 +19,11 @@ app-root {
   min-height: 100vh;
 }
 
-button, input {
-  font-family: inherit; 
-  font-size: inherit;   
-  color: inherit;       
+button,
+input {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
   line-height: inherit;
 }
 
@@ -32,6 +34,7 @@ button, input {
   font-weight: 400;
   src: url('../public/assets/fonts/quicksand-v37-latin-regular.woff2') format('woff2');
 }
+
 @font-face {
   font-display: swap;
   font-family: 'Quicksand';
@@ -39,6 +42,7 @@ button, input {
   font-weight: 500;
   src: url('../public/assets/fonts/quicksand-v37-latin-500.woff2') format('woff2');
 }
+
 @font-face {
   font-display: swap;
   font-family: 'Quicksand';
@@ -46,6 +50,7 @@ button, input {
   font-weight: 600;
   src: url('../public/assets/fonts/quicksand-v37-latin-600.woff2') format('woff2');
 }
+
 @font-face {
   font-display: swap;
   font-family: 'Quicksand';
@@ -61,6 +66,7 @@ button, input {
   font-weight: 400;
   src: url('../public/assets/fonts/ubuntu-v21-latin-regular.woff2') format('woff2');
 }
+
 @font-face {
   font-display: swap;
   font-family: 'Ubuntu';
@@ -68,6 +74,7 @@ button, input {
   font-weight: 500;
   src: url('../public/assets/fonts/ubuntu-v21-latin-500.woff2') format('woff2');
 }
+
 @font-face {
   font-display: swap;
   font-family: 'Ubuntu';
@@ -83,7 +90,7 @@ button, input {
 }
 
 main.main-content {
-  flex: 1 0 auto; 
+  flex: 1 0 auto;
 }
 
 app-footer {
