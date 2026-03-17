@@ -15,7 +15,7 @@ export class LoadingComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      this.router.navigate(['/recipe-results']);
+      this.router.navigate(['/generate-result']);
     }, 5000);
   }
 }
