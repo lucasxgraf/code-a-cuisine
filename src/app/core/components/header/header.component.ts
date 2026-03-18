@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { filter, map, mergeMap } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
+import { NavigationService } from '../../services/navigation.service';
+
 
 @Component({
   selector: 'app-header',
@@ -14,6 +16,7 @@ import { filter, map, mergeMap } from 'rxjs/operators';
 export class HeaderComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private navigationService = inject(NavigationService);
 
   protected navData = toSignal(
     this.router.events.pipe(
@@ -25,6 +28,18 @@ export class HeaderComponent {
       })
     )
   );
+
+  protected finalBackTarget = computed(() => {
+    const data = this.navData();
+    if (!data) 
+      return '/home';
+
+    if (data['backTarget'] === 'auto') {
+      return this.navigationService.previousUrl();
+    }
+
+    return data['backTarget'] || '/home';
+  });
 
   protected headerClasses = computed(() => {
     const theme = this.navData()?.['headerTheme'] || 'green-logo';

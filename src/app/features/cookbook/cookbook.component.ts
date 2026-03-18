@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { MostLikedCardComponent } from "../../shared/ui/most-liked-card/most-liked-card.component";
 import { HeartButtonComponent } from "../../shared/ui/heart-button/heart-button.component";
+import { CuisineCardComponent } from "../../shared/ui/cuisine-card/cuisine-card.component";
+import { ButtonComponent } from "../../shared/ui/button/button.component";
 
 @Component({
   selector: 'app-cookbook',
   standalone: true,
-  imports: [MostLikedCardComponent, HeartButtonComponent],
+  imports: [MostLikedCardComponent, HeartButtonComponent, CuisineCardComponent, ButtonComponent],
   templateUrl: './cookbook.component.html',
   styleUrl: './cookbook.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

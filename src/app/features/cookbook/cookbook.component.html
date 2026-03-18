@@ -21,4 +21,20 @@
       </div>
     </div>
   </header>
+
+  <section class="cookbook__grid">
+    @for (cuisine of cuisines(); track cuisine.id) {
+      <app-cuisine-card 
+        [name]="cuisine.name" 
+        [imageUrl]="cuisine.image"
+      />
+    }
+  </section>
+
+  <footer class="cookbook__footer">
+    <app-button variant="secondary" colorScheme="green" routerLink="/generate-input-user">
+      Generate new recipe
+    </app-button>
+  </footer>
+
 </div>

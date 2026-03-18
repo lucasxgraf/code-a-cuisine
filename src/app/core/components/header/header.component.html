@@ -248,7 +248,7 @@
 
   @if (navData()?.['backLink']) {
   <nav class="header__nav">
-    <a [routerLink]="navData()?.['backTarget']" class="header__back-link">
+    <a [routerLink]="finalBackTarget()" class="header__back-link">
       <span class="header__arrow" aria-hidden="true">←</span>
       {{ navData()?.['backLabel'] }}
     </a>

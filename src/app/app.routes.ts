@@ -70,23 +70,11 @@ export const routes: Routes = [
     data: {
       headerTheme: 'green-logo',
       backLink: true,
-      backTarget: '/generate-result',
+      backTarget: 'auto',
       backLabel: 'Back',
       hideFooter: false,
     }
   },
-
-
-
-  // { 
-  //   path: 'cookbook', 
-  //   component: CookbookComponent, 
-  //   data: { 
-  //     backLink: true, 
-  //     backTarget: '/home', 
-  //     backLabel: 'Back to home' 
-  //   } 
-  // },
   // { 
   //   path: 'cuisine/:id', 
   //   component: CuisineDetailComponent, 
