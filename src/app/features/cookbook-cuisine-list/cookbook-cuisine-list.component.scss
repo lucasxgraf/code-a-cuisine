@@ -1,0 +1,63 @@
+@use '../../../styles/variables' as *;
+
+.cuisine-list {
+  &__hero {
+    @include flex-layout(row, flex-end, center);
+    margin-bottom: 40px;
+
+    @media (max-width: 1024px) {
+      flex-direction: column;
+      gap: 32px;
+    }
+  }
+
+  &__banner {
+    @include flex-layout(row, center, center);
+  }
+
+  &__content {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  &__rows {
+    @include flex-layout(column, flex-start, stretch);
+  }
+}
+
+.pagination {
+  margin-top: 40px;
+  @include flex-layout(row, center, center, 16px);
+
+  &__pages {
+    @include flex-layout(row, center, center, 8px);
+  }
+
+  &__page,
+  &__arrow {
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    font-family: $font-quicksand;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $color-dark-green;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $color-middle-green;
+    }
+
+    &--active {
+      color: $color-middle-green;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
+  &__dots {
+    color: $color-olive-green;
+    padding: 0 4px;
+  }
+}

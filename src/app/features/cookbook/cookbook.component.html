@@ -27,6 +27,7 @@
       <app-cuisine-card 
         [name]="cuisine.name" 
         [imageUrl]="cuisine.image"
+        [routerLink]="['/cuisine', cuisine.id]" 
       />
     }
   </section>

@@ -3,11 +3,12 @@ import { MostLikedCardComponent } from "../../shared/ui/most-liked-card/most-lik
 import { HeartButtonComponent } from "../../shared/ui/heart-button/heart-button.component";
 import { CuisineCardComponent } from "../../shared/ui/cuisine-card/cuisine-card.component";
 import { ButtonComponent } from "../../shared/ui/button/button.component";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-cookbook',
   standalone: true,
-  imports: [MostLikedCardComponent, HeartButtonComponent, CuisineCardComponent, ButtonComponent],
+  imports: [MostLikedCardComponent, HeartButtonComponent, CuisineCardComponent, ButtonComponent, RouterLink],
   templateUrl: './cookbook.component.html',
   styleUrl: './cookbook.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
