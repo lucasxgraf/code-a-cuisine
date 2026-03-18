@@ -61,6 +61,11 @@
 
     &__likes {
       @include flex-layout(row, center, center, 4px);
+
+      img {
+        width: 24px;
+        height: 24px;
+      }
     }
 
     &__divider {

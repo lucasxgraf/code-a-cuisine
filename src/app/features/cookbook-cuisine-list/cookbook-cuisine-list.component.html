@@ -1,0 +1,51 @@
+<div class="cuisine-list container">
+  <header class="cuisine-list__hero">
+    <app-button colorScheme="green" routerLink="/generate-input-user">
+      Generate a recipe
+    </app-button>
+  </header>
+
+  <div class="cuisine-list__banner">
+    @switch (cuisineId()) {
+      @case ('italian') {
+        <img src="assets/svg/cookbook-cuisine-list/italian.svg" alt="banner for italian cuisine">
+      }
+      @case ('german') {
+        <img src="assets/svg/cookbook-cuisine-list/german.svg" alt="banner for german cuisine">
+      }
+      @case ('indian') {
+        <img src="assets/svg/cookbook-cuisine-list/indian.svg" alt="banner for indian cuisine">
+      }
+      @case ('japanese') {
+        <img src="assets/svg/cookbook-cuisine-list/japanese.svg" alt="banner for japanese cuisine">
+      }
+      @case ('gourmet') {
+        <img src="assets/svg/cookbook-cuisine-list/gourmet.svg" alt="banner for gourmet cuisine">
+      }
+      @case ('fusion') {
+        <img src="assets/svg/cookbook-cuisine-list/fusion.svg" alt="banner for fusion cuisine">
+      }
+    }
+  </div>
+
+  <section class="cuisine-list__content">
+    <div class="cuisine-list__rows">
+      @for (recipe of recipes(); track recipe.id; let i = $index) {
+      <app-recipe-list-row [index]="i + 1" [title]="recipe.title" [time]="recipe.time" [tags]="recipe.tags"
+        [likes]="recipe.likes" [routerLink]="['/recipe', recipe.id]" />
+      }
+    </div>
+
+    <nav class="pagination" aria-label="Page navigation">
+      <button class="pagination__arrow" aria-label="Previous page">‹</button>
+      <div class="pagination__pages">
+        <button class="pagination__page pagination__page--active">1</button>
+        <button class="pagination__page">2</button>
+        <button class="pagination__page">3</button>
+        <span class="pagination__dots">...</span>
+        <button class="pagination__page">8</button>
+      </div>
+      <button class="pagination__arrow" aria-label="Next page">›</button>
+    </nav>
+  </section>
+</div>

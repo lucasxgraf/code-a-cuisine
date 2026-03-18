@@ -1,0 +1,57 @@
+@use '../../../../styles/variables' as *;
+
+.recipe-row {
+  @include flex-layout(row, space-between, center);
+  padding: 12px 16px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-bottom: 1px solid rgba($color-olive-green, 0.1);
+
+  &:hover {
+    background-color: rgba($color-creme, 0.7);
+  }
+
+  &__main {
+    @include flex-layout(row, center, center, 16px);
+  }
+
+  &__number {
+    font-family: $font-quicksand;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: $color-middle-green;
+    text-align: center;
+    background-color: $color-creme;
+    border-radius: 20px;
+    padding: 4px 12px;
+  }
+
+  &__content {
+    @include flex-layout(column, flex-start, flex-start, 4px);
+  }
+
+  &__time {
+    @include flex-layout(row, center, center, 8px);
+    color: $color-olive-green;
+    font-family: $font-quicksand;
+    font-weight: 500;
+  }
+
+  &__title {
+    font-family: $font-quicksand;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: $color-middle-green;
+  }
+
+  &__tags {
+    @include flex-layout(row, center, center, 12px);
+  }
+
+  &__likes {
+    font-weight: 500;
+    color: $color-middle-green;
+    @include flex-layout(row, center, center, 4px);
+  }
+}

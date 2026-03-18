@@ -6,17 +6,17 @@
 }
 
 .cuisine-card {
-  cursor: pointer;
   outline: none;
   max-width: 400px;
   
   &__title {
+    width: fit-content;
     font-family: $font-quicksand;
     font-size: 1.5rem;
     font-weight: 600;
     color: $color-middle-green;
     margin-bottom: 16px;
-    @include flex-layout($ai: center, $jc: flex-start);
+    cursor: pointer;
   }
   
   &__image-wrapper {
@@ -26,13 +26,14 @@
     overflow: hidden;
     background-color: #eee;
   }
-
+  
   &__image {
+    cursor: pointer;
     object-fit: cover;
     transition: transform 0.3s ease;
-  }
-
-  &:hover &__image {
-    transform: scale(1.05);
+    
+    &:hover {
+      transform: scale(1.05);
+    }
   }
 }

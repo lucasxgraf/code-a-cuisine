@@ -5,6 +5,8 @@ import { PreferencesComponent } from './features/generator/preferences/preferenc
 import { LoadingComponent } from './features/generator/loading/loading.component';
 import { ResultComponent } from './features/generator/result/result.component';
 import { RecipeDetailComponent } from './features/recipe-detail/recipe-detail.component';
+import { CookbookComponent } from './features/cookbook/cookbook.component';
+import { CookbookCuisineListComponent } from './features/cookbook-cuisine-list/cookbook-cuisine-list.component';
 
 export const routes: Routes = [
   { 
@@ -31,7 +33,8 @@ export const routes: Routes = [
       headerTheme: 'green-logo',
       backLink: true,
       backTarget: '/generate-input-user', 
-      backLabel: 'Ingredients'
+      backLabel: 'Ingredients',
+      hideFooter: false,
     } 
   },
   { 
@@ -58,30 +61,41 @@ export const routes: Routes = [
     data: {
       headerTheme: 'green-logo',
       backLink: true,
-      hideFooter: false,
       backTarget: '/generate-result',
-      backLabel: 'Recipe results'
+      backLabel: 'Recipe results',
+      hideFooter: false,
     } 
   },
-
-
-
-  // { 
-  //   path: 'cookbook', 
-  //   component: CookbookComponent, 
-  //   data: { 
-  //     backLink: true, 
-  //     backTarget: '/home', 
-  //     backLabel: 'Back to home' 
-  //   } 
-  // },
-  // { 
-  //   path: 'cuisine/:id', 
-  //   component: CuisineDetailComponent, 
-  //   data: { 
-  //     backLink: true, 
-  //     backTarget: '/cookbook', 
-  //     backLabel: 'Back to Cookbook'
-  //   }
-  // }
+  { 
+    path: 'cookbook', 
+    component: CookbookComponent, 
+    data: {
+      headerTheme: 'green-logo',
+      backLink: true,
+      backTarget: 'auto',
+      backLabel: 'Back',
+      hideFooter: false,
+    }
+  },
+  { 
+    path: 'cuisine/:id', 
+    component: CookbookCuisineListComponent, 
+    data: { 
+      headerTheme: 'green-logo', 
+      backLink: true, 
+      backTarget: '/cookbook', 
+      backLabel: 'Cookbook',
+      hideFooter: false,
+    }
+  },
+  { 
+    path: 'recipe/:id', 
+    component: RecipeDetailComponent,
+    data: { 
+      headerTheme: 'green-logo', 
+      backLink: true, 
+      backTarget: 'auto', 
+      backLabel: 'Back' 
+    }
+  }
 ];
