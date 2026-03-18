@@ -13,6 +13,7 @@ export class IngredientListItemComponent {
   amount = input.required<number | string>();
   unit = input<string>('');
   name = input.required<string>();
+  isEditable = input<boolean>(true);
 
   remove = output<void>();
   update = output<{ amount: number | string, unit: string }>();

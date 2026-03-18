@@ -8,7 +8,7 @@
 
 .ingredient-item {
   &__content {
-    @include flex-layout(row, flex-start, flex-start, 12px);
+    @include flex-layout(row, flex-start, center, 12px);
     font-family: $font-quicksand;
     color: $color-dark-green;
     flex: 1;
@@ -18,18 +18,14 @@
     color: $color-middle-green;
     font-size: 1.5rem;
     line-height: 1;
-    margin-top: 4px;
   }
 
   &__quantity, &__name {
     font-weight: 500;
-    font-size: 1.1rem;
-    margin-top: 8px;
   }
 
   &__actions {
     @include flex-layout(row, center, center, 8px);
-    margin-top: 4px;
   }
 
   &__btn {
