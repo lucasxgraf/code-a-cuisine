@@ -4,11 +4,13 @@ import { ChefsLabelComponent } from "../../shared/ui/chefs-label/chefs-label.com
 import { IngredientListItemComponent } from "../../shared/ui/ingredient-list-item/ingredient-list-item.component";
 import { ActivatedRoute } from '@angular/router';
 import { RecipeGeneratorService } from '../../core/services/recipe-generator.service';
+import { HeartButtonComponent } from "../../shared/ui/heart-button/heart-button.component";
+import { ButtonComponent } from "../../shared/ui/button/button.component";
 
 @Component({
   selector: 'app-recipe-detail',
   standalone: true,
-  imports: [TagComponent, ChefsLabelComponent, IngredientListItemComponent],
+  imports: [TagComponent, ChefsLabelComponent, IngredientListItemComponent, HeartButtonComponent, ButtonComponent],
   templateUrl: './recipe-detail.component.html',
   styleUrl: './recipe-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
