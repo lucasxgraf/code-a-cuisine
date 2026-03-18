@@ -5,6 +5,7 @@ import { PreferencesComponent } from './features/generator/preferences/preferenc
 import { LoadingComponent } from './features/generator/loading/loading.component';
 import { ResultComponent } from './features/generator/result/result.component';
 import { RecipeDetailComponent } from './features/recipe-detail/recipe-detail.component';
+import { CookbookComponent } from './features/cookbook/cookbook.component';
 
 export const routes: Routes = [
   { 
@@ -62,6 +63,17 @@ export const routes: Routes = [
       backTarget: '/generate-result',
       backLabel: 'Recipe results'
     } 
+  },
+  { 
+    path: 'cookbook', 
+    component: CookbookComponent, 
+    data: {
+      headerTheme: 'green-logo',
+      backLink: true,
+      backTarget: '/generate-result',
+      backLabel: 'Back',
+      hideFooter: false,
+    }
   },
 
 

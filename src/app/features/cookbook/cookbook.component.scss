@@ -1,0 +1,79 @@
+@use '../../../styles/variables' as *;
+
+.cookbook {
+  &__header {
+    background-color: rgba($color-olive-green, 0.1);
+    border-radius: 24px;
+    padding: 40px 24px;
+    margin-bottom: 64px;
+    @include flex-layout(row, space-between, stretch, 60px);
+
+    @media (max-width: 1024px) {
+      flex-direction: column;
+      padding: 32px;
+      gap: 40px;
+    }
+  }
+
+  &__intro {
+    flex: 1;
+    max-width: 500px;
+  }
+
+  &__title {
+    font-family: $font-ubuntu;
+    font-size: 4rem;
+    font-weight: 700;
+    color: $color-middle-green;
+    margin-bottom: 16px;
+  }
+
+  &__description {
+    font-family: $font-quicksand;
+    font-weight: 500;
+    font-size: 1.5rem;
+    color: $color-dark-green;
+  }
+
+  &__most-liked {
+    flex: 2;
+    min-width: 0; 
+    @include flex-layout(column, flex-end, stretch, 16px);
+    
+    &__header {
+      @include flex-layout(row, flex-start, center, 8px);
+
+      ::ng-deep .heart-btn {
+        // transform: scale(0.65);
+        // transform-origin: right center;
+        width: 32px;
+        height: 32px;
+      }
+    }
+    
+    &__title {
+      font-family: $font-quicksand;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: $color-middle-green;
+    }
+    
+    &__list {
+      @include flex-layout(row, flex-start, stretch, 16px);
+      width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
+      
+      &::-webkit-scrollbar {
+        display: none;
+      }
+  
+      app-most-liked-card {
+        flex: 0 0 320px; 
+        @media (max-width: 600px) {
+          flex: 0 0 280px;
+        }
+      }
+    }
+  }
+}

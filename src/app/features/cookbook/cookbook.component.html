@@ -1,0 +1,24 @@
+<div class="cookbook container">
+  <header class="cookbook__header">
+    <div class="cookbook__intro">
+      <h1 class="cookbook__title">Cookbook</h1>
+      <p class="cookbook__description">
+        From quick bites to gourmet delights, explore them all in our ultimate cookbook and get inspired for your next
+        culinary adventure.
+      </p>
+    </div>
+
+    <div class="cookbook__most-liked">
+      <div class="cookbook__most-liked__header">
+        <h2 class="cookbook__most-liked__title">Most liked recipes</h2>
+        <app-heart-button></app-heart-button>
+      </div>
+
+      <div class="cookbook__most-liked__list">
+        @for (recipe of featuredRecipes(); track recipe.title) {
+        <app-most-liked-card [title]="recipe.title" [cookingTime]="recipe.time" [likes]="recipe.likes" />
+        }
+      </div>
+    </div>
+  </header>
+</div>
