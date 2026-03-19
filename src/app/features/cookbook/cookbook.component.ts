@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { MostLikedCardComponent } from "../../shared/ui/most-liked-card/most-liked-card.component";
 import { HeartButtonComponent } from "../../shared/ui/heart-button/heart-button.component";
 import { CuisineCardComponent } from "../../shared/ui/cuisine-card/cuisine-card.component";
 import { ButtonComponent } from "../../shared/ui/button/button.component";
 import { RouterLink } from "@angular/router";
+import { RecipeService } from '../../core/services/recipe.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-cookbook',
@@ -14,14 +16,16 @@ import { RouterLink } from "@angular/router";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CookbookComponent {
-  readonly cuisines = signal([
-    { id: 'italian', name: 'Italian cuisine 🌮', image: 'assets/img/cookbook/italian.png' },
-    { id: 'german', name: 'German cuisine 🥨', image: 'assets/img/cookbook/german.png' },
-    { id: 'japanese', name: 'Japanese cuisine 🥢', image: 'assets/img/cookbook/japanese.png' },
-    { id: 'gourmet', name: 'Gourmet cuisine ✨', image: 'assets/img/cookbook/gourmet.png' },
-    { id: 'indian', name: 'Indian cuisine 🍛', image: 'assets/img/cookbook/indian.png' },
-    { id: 'fusion', name: 'Fusion cuisine 🍢', image: 'assets/img/cookbook/fusion.png' }
-  ]);
+  private recipeService = inject(RecipeService);
+
+  private cuisinesRaw = toSignal(this.recipeService.getCuisines(), { initialValue: [] });
+
+  readonly cuisines = computed(() => {
+    return this.cuisinesRaw().map(c => ({
+      ...c,
+      image: `assets/img/cookbook/${c.slug}.png`
+    }));
+  });
 
   readonly featuredRecipes = signal([
     { title: 'Pasta with spinach and cherry tomatoes', time: '20min', likes: 66 },

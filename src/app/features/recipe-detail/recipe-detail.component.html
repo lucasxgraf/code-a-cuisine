@@ -1,3 +1,4 @@
+@if (recipe(); as data) {
 <div class="detail-page container">
   <article class="recipe-detail">
     <header class="recipe-detail__header">
@@ -5,13 +6,13 @@
         <div class="recipe-detail__header-content-left">
           <span class="recipe-detail__time">
             <img src="assets/svg/schedule.svg" alt="Schedule">
-            Cooking time: {{ recipe().time }}
+            Cooking time: {{ data.time }}
           </span>
 
-          <h1 class="recipe-detail__title">{{ recipe().title }}</h1>
+          <h1 class="recipe-detail__title">{{ data.title }}</h1>
 
           <div class="recipe-detail__chefs-summary">
-            <span>Cooking person: {{ recipe().baseChefs }}</span>
+            <span>Cooking person: {{ data.baseChefs }}</span>
             <app-chefs-label [chefId]="1" />
             <app-chefs-label [chefId]="2" />
           </div>
@@ -19,13 +20,13 @@
 
         <div class="recipe-detail__header-content-right">
           <div class="recipe-detail__actions">
-            @for (tag of recipe().tags; track tag) {
+            @for (tag of data.tags; track tag) {
             <app-tag variant="green">{{ tag }}</app-tag>
             }
             <app-tag variant="green">
               <span class="recipe-detail__likes">
                 <img src="assets/svg/heart_default.svg" alt="Heart empty">
-                {{ recipe().likes }}
+                {{ data.likes }}
               </span>
             </app-tag>
           </div>
@@ -34,10 +35,10 @@
 
           <span>Nutritional information</span>
           <div class="recipe-detail__nutrition">
-            <div class="nutrition-item"><strong>Energie</strong> {{ recipe().nutrition.kcal }} kcal</div>
-            <div class="nutrition-item"><strong>Protein</strong> {{ recipe().nutrition.protein }}</div>
-            <div class="nutrition-item"><strong>Fat</strong> {{ recipe().nutrition.fat }}</div>
-            <div class="nutrition-item"><strong>Carbs</strong> {{ recipe().nutrition.carbs }}</div>
+            <div class="nutrition-item"><strong>Energie</strong> {{ data.nutrition.kcal }} kcal</div>
+            <div class="nutrition-item"><strong>Protein</strong> {{ data.nutrition.protein }}</div>
+            <div class="nutrition-item"><strong>Fat</strong> {{ data.nutrition.fat }}</div>
+            <div class="nutrition-item"><strong>Carbs</strong> {{ data.nutrition.carbs }}</div>
           </div>
         </div>
       </div>
@@ -52,15 +53,16 @@
         <div class="ingredient-group">
           <h3 class="ingredient-group__title">Your ingredients</h3>
           <ul class="ingredient-group__list">
-            @for (ing of recipe().ingredients.user; track ing.name) {
-            <app-ingredient-list-item [amount]="ing.amount" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
+            @for (ing of data.userIngredients; track ing.name) {
+            <app-ingredient-list-item [amount]="ing.scaledAmount" [unit]="ing.unit" [name]="ing.name"
+              [isEditable]="false" />
             }
           </ul>
         </div>
         <div class="ingredient-group">
           <h3 class="ingredient-group__title">Extra ingredients</h3>
           <ul class="ingredient-group__list">
-            @for (ing of recipe().ingredients.extra; track ing.name) {
+            @for (ing of data.extraIngredients; track ing.name) {
             <app-ingredient-list-item [amount]="ing.amount" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
             }
           </ul>
@@ -74,14 +76,14 @@
       </div>
 
       <div class="recipe-detail__steps">
-        @for (step of recipe().steps; track step.id) {
+        @for (step of data.steps; track step.id) {
         <article class="step-card">
           <div class="step-card__header">
             <span class="step-card__number">{{ step.id }}.</span>
             <h4 class="step-card__title">{{ step.title }}</h4>
-            <app-chefs-label [chefId]="1" />
+            <app-chefs-label [chefId]="step.chefId" />
           </div>
-          <p class="step-card__text">{{ step.text }}</p>
+          <p class="step-card__text">{{ step.description }}</p>
         </article>
         }
       </div>
@@ -105,3 +107,4 @@
     </app-button>
   </nav>
 </div>
+}

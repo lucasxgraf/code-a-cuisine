@@ -31,8 +31,15 @@
   <section class="cuisine-list__content">
     <div class="cuisine-list__rows">
       @for (recipe of recipes(); track recipe.id; let i = $index) {
-      <app-recipe-list-row [index]="i + 1" [title]="recipe.title" [time]="recipe.time" [tags]="recipe.tags"
-        [likes]="recipe.likes" [routerLink]="['/recipe', recipe.id]" />
+      <app-recipe-list-row 
+      [index]="i + 1" 
+      [title]="recipe.title" 
+      [time]="recipe.cooking_time + ' min'" 
+      [tags]="recipe.diet_type ? [recipe.diet_type] : []"
+      [likes]="recipe.likes" 
+      [routerLink]="['/recipe', recipe.id]" />
+      } @empty {
+        <p class="cuisine-list__empty">No recipes found for this cuisine yet.</p>
       }
     </div>
 

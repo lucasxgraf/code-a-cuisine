@@ -3,7 +3,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RecipeListRowComponent } from '../../shared/ui/recipe-list-row/recipe-list-row.component';
 import { ButtonComponent } from '../../shared/ui/button/button.component';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs';
+import { RecipeService } from '../../core/services/recipe.service';
 
 @Component({
   selector: 'app-cookbook-cuisine-list',
@@ -15,8 +16,20 @@ import { map } from 'rxjs';
 })
 export class CookbookCuisineListComponent {
   private route = inject(ActivatedRoute);
+  private recipeService = inject(RecipeService);
 
-  protected cuisineId = toSignal(this.route.params.pipe(map(p => p['id'])));
+  protected cuisineId = toSignal(
+    this.route.params.pipe(map(p => p['id'] as string)),
+    { initialValue: '' }
+  );
+
+  private recipes$ = this.route.params.pipe(
+    map(params => params['id'] as string),
+    filter(id => !!id),
+    switchMap(id => this.recipeService.getRecipesByCuisine(id))
+  );
+
+  protected recipes = toSignal(this.recipes$, { initialValue: [] });
 
   private cuisineNames: Record<string, string> = {
     'italian': 'Italian cuisine',
@@ -31,15 +44,4 @@ export class CookbookCuisineListComponent {
     const id = this.cuisineId();
     return id ? this.cuisineNames[id] : 'Cuisine';
   });
-
-  recipes = signal([
-    { id: '1', title: 'Pasta with spinach and cherry tomatoes', time: '20min', likes: 66, tags: ['Vegetarian', 'Quick'] },
-    { id: '2', title: 'Creamy garlic shrimp pasta', time: '22min', likes: 32, tags: ['Quick'] },
-    { id: '3', title: 'Funghi salami pizza', time: '16min', likes: 42, tags: ['Quick'] },
-    { id: '4', title: 'Pasta with spinach and cherry tomatoes', time: '20min', likes: 66, tags: ['Vegetarian', 'Quick'] },
-    { id: '5', title: 'Creamy garlic shrimp pasta', time: '22min', likes: 32, tags: ['Quick'] },
-    { id: '6', title: 'Funghi salami pizza', time: '16min', likes: 42, tags: ['Quick'] },
-    { id: '7', title: 'Pasta with spinach and cherry tomatoes', time: '20min', likes: 66, tags: ['Vegetarian', 'Quick'] },
-    { id: '8', title: 'Creamy garlic shrimp pasta', time: '22min', likes: 32, tags: ['Quick'] }
-  ]);
 }

@@ -4,6 +4,8 @@ import { NgOptimizedImage } from '@angular/common';
 import { RecipeCardComponent } from '../../../shared/ui/recipe-card/recipe-card.component';
 import { TagComponent } from '../../../shared/ui/tag/tag.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { RecipeService } from '../../../core/services/recipe.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-result',
@@ -15,15 +17,12 @@ import { ButtonComponent } from '../../../shared/ui/button/button.component';
 })
 export class ResultComponent {
   private router = inject(Router);
+  private recipeService = inject(RecipeService);
 
-  recipes = signal([
-    { id: '1', title: 'Pasta with spinach and cherry tomatoes', time: '20min' },
-    { id: '2', title: 'Creamy garlic shrimp pasta', time: '22min' },
-    { id: '3', title: 'Pasta alla Trapanese (Sicilian Pesto)', time: '20min' }
-  ]);
+  protected recipes = toSignal(this.recipeService.getFeaturedRecipes(), { initialValue: [] });
 
   onViewRecipe(id: string) {
-    this.router.navigate(['/recipe-detail']);
+    this.router.navigate(['/recipe', id]);
   }
 
   generateNew() {

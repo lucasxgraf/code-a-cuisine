@@ -4,7 +4,7 @@ import { RecipeGeneratorService } from '../../../core/services/recipe-generator.
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { CounterComponent } from '../../../shared/ui/counter/counter.component';
 import { SelectionGroupComponent } from '../../../shared/ui/selection-group/selection-group.component';
-import { RecipePreferences } from '../../../core/models/recepie.model';
+import { RecipePreferences } from '../../../core/models/recipe.model';
 
 @Component({
   selector: 'app-preferences',
@@ -24,17 +24,17 @@ export class PreferencesComponent {
     { label: 'Complex', sub: 'over 45min' }
   ];
   readonly cuisines = [
-    { label: 'German' }, 
-    { label: 'Italian' }, 
-    { label: 'Indian' }, 
-    { label: 'Japanese' }, 
-    { label: 'Gourmet' }, 
+    { label: 'German' },
+    { label: 'Italian' },
+    { label: 'Indian' },
+    { label: 'Japanese' },
+    { label: 'Gourmet' },
     { label: 'Fusion' }
-  ];  
+  ];
   readonly diets = [
-    { label: 'Vegetarian' }, 
-    { label: 'Vegan' }, 
-    { label: 'Keto' }, 
+    { label: 'Vegetarian' },
+    { label: 'Vegan' },
+    { label: 'Keto' },
     { label: 'No preferences' }
   ];
 
@@ -45,7 +45,7 @@ export class PreferencesComponent {
   updateCount(key: 'portions' | 'people', newValue: number): void {
     const currentValue = this.service.preferences()[key];
     const delta = newValue - currentValue;
-    
+
     this.service.changeCount(key, delta);
   }
 

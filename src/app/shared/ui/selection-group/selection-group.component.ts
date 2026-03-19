@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TagComponent } from '../tag/tag.component';
-import { SelectionOption } from '../../../core/models/recepie.model';
+import { SelectionOption } from '../../../core/models/recipe.model';
 
 @Component({
   selector: 'app-selection-group',
