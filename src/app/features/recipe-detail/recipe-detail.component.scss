@@ -62,9 +62,14 @@
     &__likes {
       @include flex-layout(row, center, center, 4px);
 
-      img {
+      app-heart-button {
         width: 24px;
         height: 24px;
+        @include flex-layout(row, center, center);
+
+        ::ng-deep .heart-btn {
+          transform: scale(0.5);
+        }
       }
     }
 
@@ -96,7 +101,7 @@
     }
 
     &__ingredients-grid {
-      @include flex-layout(row, space-evenly, center);
+      @include flex-layout(row, space-evenly, flex-start);
     }
     
     .ingredient-group {

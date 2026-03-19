@@ -45,4 +45,18 @@ export class RecipeService {
         .single()
     ).pipe(map(res => (res.data as FullRecipe) || null));
   }
+
+  toggleRecipeLike(id: string, delta: number) {
+    return from(
+      this.supabase.rpc('handle_recipe_like', { 
+        recipe_id: id, 
+        increment_val: delta 
+      })
+    ).pipe(
+      map(res => {
+        if (res.error) throw res.error;
+        return res.data;
+      })
+    );
+  }
 }

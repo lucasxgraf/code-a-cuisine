@@ -32,6 +32,9 @@ export class RecipeDetailComponent {
   private route = inject(ActivatedRoute);
   private recipeService = inject(RecipeService);
   protected generatorService = inject(RecipeGeneratorService);
+  
+  initiallyLikedAtLoad = signal<boolean>(false);
+  isLiked = signal<boolean>(false);
 
   private recipeId$ = this.route.params.pipe(
     map(params => params['id'] as string),
@@ -39,12 +42,16 @@ export class RecipeDetailComponent {
   );
 
   private rawRecipe$ = this.recipeId$.pipe(
-    switchMap(id => this.recipeService.getRecipeById(id))
+    switchMap(id => {
+      // Re-evaluate the initial state for every new recipe loaded
+      const liked = this.checkIfLikedInitially(id);
+      this.initiallyLikedAtLoad.set(liked);
+      this.isLiked.set(liked);
+      return this.recipeService.getRecipeById(id);
+    })
   );
 
   protected rawRecipe = toSignal(this.rawRecipe$, { initialValue: null as FullRecipe | null });
-
-  isLiked = signal(false);
 
   protected recipe = computed(() => {
     const data = this.rawRecipe();
@@ -86,7 +93,61 @@ export class RecipeDetailComponent {
     };
   });
 
+  protected displayLikes = computed(() => {
+    const data = this.recipe();
+    if (!data) return null; // Gibt null zurück, solange geladen wird
+
+    const baseLikes = data.likes;
+    const currentlyLiked = this.isLiked();
+    const initiallyLiked = this.initiallyLikedAtLoad();
+
+    // Logik:
+    // Wenn ich es JETZT mag, aber beim Laden der Seite NICHT -> +1
+    if (currentlyLiked && !initiallyLiked) return baseLikes + 1;
+    
+    // Wenn ich es JETZT NICHT mag, aber beim Laden der Seite SCHON -> -1
+    if (!currentlyLiked && initiallyLiked) return baseLikes - 1;
+
+    // Ansonsten (Zustand wie beim Laden) -> DB Wert
+    return baseLikes;
+  });
+
+  private checkIfLikedInitially(id: string): boolean {
+    const likedRecipes = JSON.parse(localStorage.getItem('likedRecipes') || '[]');
+    return likedRecipes.includes(id);
+  }
+
   toggleLike(): void {
-    this.isLiked.update(v => !v);
+    const id = this.rawRecipe()?.id;
+    if (!id) return;
+
+    const currentlyLiked = this.isLiked();
+    const delta = currentlyLiked ? -1 : 1;
+
+    // 1. UI sofort umschalten (Optimistic)
+    this.isLiked.set(!currentlyLiked);
+
+    // 2. Im Browser merken
+    this.updateLocalStorage(id, !currentlyLiked);
+
+    // 3. In Datenbank speichern
+    this.recipeService.toggleRecipeLike(id, delta).subscribe({
+      error: (err) => {
+        // Rollback bei Fehler
+        this.isLiked.set(currentlyLiked);
+        this.updateLocalStorage(id, currentlyLiked);
+        console.error('Speichern fehlgeschlagen', err);
+      }
+    });
+  }
+
+  private updateLocalStorage(id: string, add: boolean) {
+    let liked: string[] = JSON.parse(localStorage.getItem('likedRecipes') || '[]');
+    if (add) {
+      if (!liked.includes(id)) liked.push(id);
+    } else {
+      liked = liked.filter(item => item !== id);
+    }
+    localStorage.setItem('likedRecipes', JSON.stringify(liked));
   }
 }

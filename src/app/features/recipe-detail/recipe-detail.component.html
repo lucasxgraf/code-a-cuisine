@@ -23,10 +23,10 @@
             @for (tag of data.tags; track tag) {
             <app-tag variant="green">{{ tag }}</app-tag>
             }
-            <app-tag variant="green">
+            <app-tag variant="green" (click)="toggleLike()">
               <span class="recipe-detail__likes">
-                <img src="assets/svg/heart_default.svg" alt="Heart empty">
-                {{ data.likes }}
+                <app-heart-button [isLiked]="isLiked()" />
+                  {{ displayLikes() }}
               </span>
             </app-tag>
           </div>
@@ -92,7 +92,7 @@
     <section class="recipe-detail__footer">
       <p><strong>Just finished this meal?</strong></p>
       <p>Give it a heart, so that the others know this is delicious.</p>
-      <app-heart-button></app-heart-button>
+      <app-heart-button [isLiked]="isLiked()" (toggle)="toggleLike()" />
     </section>
   </article>
 
