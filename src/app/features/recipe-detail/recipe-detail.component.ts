@@ -11,6 +11,7 @@ import { TagComponent } from "../../shared/ui/tag/tag.component";
 import { ChefsLabelComponent } from "../../shared/ui/chefs-label/chefs-label.component";
 import { IngredientListItemComponent } from "../../shared/ui/ingredient-list-item/ingredient-list-item.component";
 import { HeartButtonComponent } from "../../shared/ui/heart-button/heart-button.component";
+import { ButtonComponent } from "../../shared/ui/button/button.component";
 
 @Component({
   selector: 'app-recipe-detail',
@@ -20,8 +21,9 @@ import { HeartButtonComponent } from "../../shared/ui/heart-button/heart-button.
     ChefsLabelComponent,
     IngredientListItemComponent,
     HeartButtonComponent,
-    RouterLink
-  ],
+    RouterLink,
+    ButtonComponent
+],
   templateUrl: './recipe-detail.component.html',
   styleUrl: './recipe-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

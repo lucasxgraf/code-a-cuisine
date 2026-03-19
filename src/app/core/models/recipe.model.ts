@@ -50,7 +50,6 @@ export interface Recipe {
 export interface RecipeWithCuisine extends Recipe {
   cuisines: {
     slug: string;
-    
   } | null;
 }
 

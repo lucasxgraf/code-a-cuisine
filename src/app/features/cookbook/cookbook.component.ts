@@ -6,6 +6,7 @@ import { ButtonComponent } from "../../shared/ui/button/button.component";
 import { RouterLink } from "@angular/router";
 import { RecipeService } from '../../core/services/recipe.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Recipe } from '../../core/models/recipe.model';
 
 @Component({
   selector: 'app-cookbook',
@@ -27,9 +28,7 @@ export class CookbookComponent {
     }));
   });
 
-  readonly featuredRecipes = signal([
-    { title: 'Pasta with spinach and cherry tomatoes', time: '20min', likes: 66 },
-    { title: 'Low Carb Vegan No-Bake Paleo Bars', time: '35min', likes: 57 },
-    { title: 'Summer Quinoa Salad with Lemon', time: '15min', likes: 42 }
-  ]);
+  readonly featuredRecipes = toSignal(this.recipeService.getFeaturedRecipes(), {
+    initialValue: [] as Recipe[]
+  });
 }

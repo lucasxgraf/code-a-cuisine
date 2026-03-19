@@ -16,7 +16,12 @@
 
       <div class="cookbook__most-liked__list">
         @for (recipe of featuredRecipes(); track recipe.title) {
-        <app-most-liked-card [title]="recipe.title" [cookingTime]="recipe.time" [likes]="recipe.likes" />
+        <app-most-liked-card 
+        [title]="recipe.title" 
+        [cookingTime]="recipe.cooking_time + ' min'" 
+        [likes]="recipe.likes" 
+        [routerLink]="['/recipe', recipe.id]"
+        />
         }
       </div>
     </div>
@@ -24,10 +29,10 @@
 
   <section class="cookbook__grid">
     @for (cuisine of cuisines(); track cuisine.id) {
-      <app-cuisine-card 
-        [name]="cuisine.name" 
+      <app-cuisine-card
+        [name]="cuisine.name"
         [imageUrl]="cuisine.image"
-        [routerLink]="['/cuisine', cuisine.id]" 
+        [routerLink]="['/cuisine', cuisine.slug]"
       />
     }
   </section>

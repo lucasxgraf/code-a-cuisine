@@ -79,7 +79,7 @@
         @for (step of data.steps; track step.id) {
         <article class="step-card">
           <div class="step-card__header">
-            <span class="step-card__number">{{ step.id }}.</span>
+            <span class="step-card__number">{{ step.step_number }}.</span>
             <h4 class="step-card__title">{{ step.title }}</h4>
             <app-chefs-label [chefId]="step.chefId" />
           </div>
