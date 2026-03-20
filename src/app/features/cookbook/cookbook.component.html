@@ -17,10 +17,12 @@
       <div class="cookbook__most-liked__list">
         @for (recipe of featuredRecipes(); track recipe.title) {
         <app-most-liked-card 
-        [title]="recipe.title" 
-        [cookingTime]="recipe.cooking_time + ' min'" 
-        [likes]="recipe.likes" 
-        [routerLink]="['/recipe', recipe.id]"
+          [title]="recipe.title" 
+          [cookingTime]="recipe.cooking_time + ' min'" 
+          [likes]="recipe.displayLikes" 
+          [isLiked]="recipe.isLiked"
+          (toggleLike)="onToggleLike(recipe.id)"
+          (cardClick)="navigateToRecipe(recipe.id)"
         />
         }
       </div>

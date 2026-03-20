@@ -25,7 +25,7 @@
             }
             <app-tag variant="green" (click)="toggleLike()">
               <span class="recipe-detail__likes">
-                <app-heart-button [isLiked]="isLiked()" />
+                <app-heart-button [isLiked]="recipeService.isLiked(data.id)" />
                   {{ displayLikes() }}
               </span>
             </app-tag>
@@ -92,7 +92,10 @@
     <section class="recipe-detail__footer">
       <p><strong>Just finished this meal?</strong></p>
       <p>Give it a heart, so that the others know this is delicious.</p>
-      <app-heart-button [isLiked]="isLiked()" (toggle)="toggleLike()" />
+      <app-heart-button 
+        [isLiked]="recipeService.isLiked(data.id)" 
+        (toggle)="toggleLike()" 
+      />
     </section>
   </article>
 

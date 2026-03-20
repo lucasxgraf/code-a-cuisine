@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { effect, inject, Injectable, signal } from '@angular/core';
 import { SupabaseService } from './supabase.service';
 import { from, map, Observable } from 'rxjs';
 import { Cuisine, Recipe, RecipeWithCuisine, FullRecipe } from '../models/recipe.model';
@@ -8,6 +8,34 @@ import { Cuisine, Recipe, RecipeWithCuisine, FullRecipe } from '../models/recipe
 })
 export class RecipeService {
   private supabase = inject(SupabaseService).client;
+
+  likedIds = signal<string[]>(JSON.parse(localStorage.getItem('likedRecipes') || '[]'));
+
+  constructor() {
+    effect(() => {
+      localStorage.setItem('likedRecipes', JSON.stringify(this.likedIds()));
+    });
+  }
+
+  isLiked(id: string): boolean {
+    return this.likedIds().includes(id);
+  }
+
+  toggleLike(id: string): number {
+    const currentlyLiked = this.isLiked(id);
+    const delta = currentlyLiked ? -1 : 1;
+
+    this.likedIds.update(ids => 
+      currentlyLiked ? ids.filter(i => i !== id) : [...ids, id]
+    );
+
+    from(this.supabase.rpc('handle_recipe_like', { 
+      recipe_id: id, 
+      increment_val: delta 
+    })).subscribe();
+
+    return delta;
+  }
 
   getCuisines(): Observable<Cuisine[]> {
     return from(

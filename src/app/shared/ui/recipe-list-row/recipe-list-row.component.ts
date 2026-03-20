@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TagComponent } from '../tag/tag.component';
+import { HeartButtonComponent } from "../heart-button/heart-button.component";
 
 @Component({
   selector: 'app-recipe-list-row',
   standalone: true,
-  imports: [TagComponent],
+  imports: [TagComponent, HeartButtonComponent],
   templateUrl: './recipe-list-row.component.html',
   styleUrl: './recipe-list-row.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -15,6 +16,8 @@ export class RecipeListRowComponent {
   time = input.required<string>();
   tags = input<string[]>([]);
   likes = input<number>(0);
-  
+  isLiked = input<boolean>(false);
+
   rowClick = output<void>();
+  toggleLike = output<void>();
 }

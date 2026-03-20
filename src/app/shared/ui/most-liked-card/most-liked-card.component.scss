@@ -44,5 +44,15 @@
 
   &__likes {
     @include flex-layout(row, center, center, 4px);
+
+    app-heart-button {
+      width: 24px;
+      height: 24px;
+      @include flex-layout(row, center, center);
+
+      ::ng-deep .heart-btn {
+        transform: scale(0.5);
+      }
+    }
   }
 }

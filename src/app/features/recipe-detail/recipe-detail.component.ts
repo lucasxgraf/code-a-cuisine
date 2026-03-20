@@ -30,11 +30,10 @@ import { ButtonComponent } from "../../shared/ui/button/button.component";
 })
 export class RecipeDetailComponent {
   private route = inject(ActivatedRoute);
-  private recipeService = inject(RecipeService);
+  protected recipeService = inject(RecipeService);
   protected generatorService = inject(RecipeGeneratorService);
   
-  initiallyLikedAtLoad = signal<boolean>(false);
-  isLiked = signal<boolean>(false);
+  protected initiallyLikedAtLoad = signal<boolean>(false);
 
   private recipeId$ = this.route.params.pipe(
     map(params => params['id'] as string),
@@ -43,10 +42,8 @@ export class RecipeDetailComponent {
 
   private rawRecipe$ = this.recipeId$.pipe(
     switchMap(id => {
-      // Re-evaluate the initial state for every new recipe loaded
       const liked = this.checkIfLikedInitially(id);
       this.initiallyLikedAtLoad.set(liked);
-      this.isLiked.set(liked);
       return this.recipeService.getRecipeById(id);
     })
   );
@@ -67,6 +64,7 @@ export class RecipeDetailComponent {
     };
 
     return {
+      id: data.id,
       title: data.title,
       time: data.cooking_time + 'min',
       likes: data.likes,
@@ -94,22 +92,15 @@ export class RecipeDetailComponent {
   });
 
   protected displayLikes = computed(() => {
-    const data = this.recipe();
-    if (!data) return null; // Gibt null zurück, solange geladen wird
-
-    const baseLikes = data.likes;
-    const currentlyLiked = this.isLiked();
-    const initiallyLiked = this.initiallyLikedAtLoad();
-
-    // Logik:
-    // Wenn ich es JETZT mag, aber beim Laden der Seite NICHT -> +1
-    if (currentlyLiked && !initiallyLiked) return baseLikes + 1;
+    const data = this.rawRecipe();
+    if (!data) return 0;
     
-    // Wenn ich es JETZT NICHT mag, aber beim Laden der Seite SCHON -> -1
-    if (!currentlyLiked && initiallyLiked) return baseLikes - 1;
+    const isNowLiked = this.recipeService.isLiked(data.id);
+    const wasLikedAtLoad = this.initiallyLikedAtLoad();
 
-    // Ansonsten (Zustand wie beim Laden) -> DB Wert
-    return baseLikes;
+    if (isNowLiked && !wasLikedAtLoad) return data.likes + 1;
+    if (!isNowLiked && wasLikedAtLoad) return data.likes - 1;
+    return data.likes;
   });
 
   private checkIfLikedInitially(id: string): boolean {
@@ -119,35 +110,6 @@ export class RecipeDetailComponent {
 
   toggleLike(): void {
     const id = this.rawRecipe()?.id;
-    if (!id) return;
-
-    const currentlyLiked = this.isLiked();
-    const delta = currentlyLiked ? -1 : 1;
-
-    // 1. UI sofort umschalten (Optimistic)
-    this.isLiked.set(!currentlyLiked);
-
-    // 2. Im Browser merken
-    this.updateLocalStorage(id, !currentlyLiked);
-
-    // 3. In Datenbank speichern
-    this.recipeService.toggleRecipeLike(id, delta).subscribe({
-      error: (err) => {
-        // Rollback bei Fehler
-        this.isLiked.set(currentlyLiked);
-        this.updateLocalStorage(id, currentlyLiked);
-        console.error('Speichern fehlgeschlagen', err);
-      }
-    });
-  }
-
-  private updateLocalStorage(id: string, add: boolean) {
-    let liked: string[] = JSON.parse(localStorage.getItem('likedRecipes') || '[]');
-    if (add) {
-      if (!liked.includes(id)) liked.push(id);
-    } else {
-      liked = liked.filter(item => item !== id);
-    }
-    localStorage.setItem('likedRecipes', JSON.stringify(liked));
+    if (id) this.recipeService.toggleLike(id);
   }
 }
