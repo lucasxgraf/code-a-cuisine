@@ -1,77 +1,115 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { switchMap, map, filter } from 'rxjs/operators';
+
+import { RecipeService } from '../../core/services/recipe.service';
+import { RecipeGeneratorService } from '../../core/services/recipe-generator.service';
+import { FullRecipe } from '../../core/models/recipe.model';
+
 import { TagComponent } from "../../shared/ui/tag/tag.component";
 import { ChefsLabelComponent } from "../../shared/ui/chefs-label/chefs-label.component";
 import { IngredientListItemComponent } from "../../shared/ui/ingredient-list-item/ingredient-list-item.component";
-import { ActivatedRoute } from '@angular/router';
-import { RecipeGeneratorService } from '../../core/services/recipe-generator.service';
 import { HeartButtonComponent } from "../../shared/ui/heart-button/heart-button.component";
 import { ButtonComponent } from "../../shared/ui/button/button.component";
 
 @Component({
   selector: 'app-recipe-detail',
   standalone: true,
-  imports: [TagComponent, ChefsLabelComponent, IngredientListItemComponent, HeartButtonComponent, ButtonComponent],
+  imports: [
+    TagComponent,
+    ChefsLabelComponent,
+    IngredientListItemComponent,
+    HeartButtonComponent,
+    RouterLink,
+    ButtonComponent
+],
   templateUrl: './recipe-detail.component.html',
   styleUrl: './recipe-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RecipeDetailComponent {
   private route = inject(ActivatedRoute);
+  protected recipeService = inject(RecipeService);
   protected generatorService = inject(RecipeGeneratorService);
+  
+  protected initiallyLikedAtLoad = signal<boolean>(false);
 
-  // protected recipeId = signal(this.route.snapshot.paramMap.get('id'));
+  private recipeId$ = this.route.params.pipe(
+    map(params => params['id'] as string),
+    filter(id => !!id)
+  );
 
-  isLiked = signal(false);
+  private rawRecipe$ = this.recipeId$.pipe(
+    switchMap(id => {
+      const liked = this.checkIfLikedInitially(id);
+      this.initiallyLikedAtLoad.set(liked);
+      return this.recipeService.getRecipeById(id);
+    })
+  );
 
-  private readonly baseRecipe = signal({
-    title: 'Pasta with spinach and cherry tomatoes',
-    basePortions: 2,
-    baseChefs: 2,
-    likes: 10,
-    time: '20min',
-    nutrition: { kcal: 630, protein: '18g', fat: '24g', carbs: '58g' },
-    tags: ['Vegetarian', 'Quick'],
-    ingredients: {
-      user: [
-        { amount: 80, unit: 'g', name: 'Pasta noodles' },
-        { amount: 100, unit: 'g', name: 'Baby spinach' },
-        { amount: 150, unit: 'g', name: 'Cherry tomatoes' },
-        { amount: 1, unit: 'pc', name: 'Egg' }
-      ],
-      extra: [
-        { amount: 40, unit: 'g', name: 'Parmesan cheese' },
-        { amount: 30, unit: 'ml', name: 'Olive oil' },
-        { amount: 0, unit: '', name: 'Herbs (dry basil, oregano, garlic)' }
-      ]
-    },
-    steps: [
-      { id: 1, title: 'Cook the pasta', chef: 1, text: 'Cook your noodles in boiling, salted water, until the pasta is al dente. Drain the pasta and reserve some of the pasta water.' },
-      { id: 2, title: 'Make the sauce', chef: 2, text: 'While the pasta is cooking, heat olive oil in a pan over medium heat. Add the garlic, and sauté until it starts to turn golden. Add the tomatoes, oregano, salt, and pepper, and cook for 3-4 minutes.' },
-      { id: 3, title: 'Finish the pasta', chef: 1, text: 'Add the noodles to the sauce, then add pasta water until the sauce is the right consistency. Simmer for 1 minute, then add the spinach, basil, chili flakes, and parmesan.' },
-      { id: 4, title: 'Final touch', chef: 2, text: 'Lower the heat to low, stir until mixed, and remove from the heat. Season to taste, top with parmesan cheese, and enjoy.' }
-    ]
-  });
-protected recipe = computed(() => {
-    const data = this.baseRecipe();
+  protected rawRecipe = toSignal(this.rawRecipe$, { initialValue: null as FullRecipe | null });
+
+  protected recipe = computed(() => {
+    const data = this.rawRecipe();
+    if (!data) return null;
+
     const selectedPortions = this.generatorService.preferences().portions;
-    const factor = selectedPortions / data.basePortions;
+    const basePortions = data.base_portions || 2;
+    const factor = selectedPortions / basePortions;
 
-    const scaleIngredients = (list: any[]) => list.map(ing => ({
-      ...ing,
-      amount: ing.amount > 0 ? (ing.amount * factor).toFixed(0) : ing.amount
-    }));
+    const scale = (amount: number | string): string => {
+      const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+      return !isNaN(num) && num > 0 ? (num * factor).toFixed(0) : amount.toString();
+    };
 
     return {
-      ...data,
-      currentPortions: selectedPortions,
-      ingredients: {
-        user: scaleIngredients(data.ingredients.user),
-        extra: scaleIngredients(data.ingredients.extra)
-      }
+      id: data.id,
+      title: data.title,
+      time: data.cooking_time + 'min',
+      likes: data.likes,
+      baseChefs: data.base_chefs,
+      tags: data.diet_type ? [data.diet_type, 'Quick'] : ['Quick'],
+      nutrition: {
+        kcal: data.kcal,
+        protein: data.protein,
+        fat: data.fat,
+        carbs: data.carbs
+      },
+      userIngredients: data.ingredients?.filter(i => !i.is_extra).map(ing => ({
+        ...ing,
+        scaledAmount: scale(ing.amount)
+      })) || [],
+      extraIngredients: data.ingredients?.filter(i => i.is_extra).map(ing => ({
+        ...ing,
+        scaledAmount: scale(ing.amount)
+      })) || [],
+      steps: data.recipe_steps?.sort((a, b) => a.step_number - b.step_number).map(step => ({
+        ...step,
+        chefId: step.chef_id as 1 | 2 | 3 | 4
+      })) || []
     };
   });
 
+  protected displayLikes = computed(() => {
+    const data = this.rawRecipe();
+    if (!data) return 0;
+    
+    const isNowLiked = this.recipeService.isLiked(data.id);
+    const wasLikedAtLoad = this.initiallyLikedAtLoad();
+
+    if (isNowLiked && !wasLikedAtLoad) return data.likes + 1;
+    if (!isNowLiked && wasLikedAtLoad) return data.likes - 1;
+    return data.likes;
+  });
+
+  private checkIfLikedInitially(id: string): boolean {
+    const likedRecipes = JSON.parse(localStorage.getItem('likedRecipes') || '[]');
+    return likedRecipes.includes(id);
+  }
+
   toggleLike(): void {
-    this.isLiked.update(v => !v);
+    const id = this.rawRecipe()?.id;
+    if (id) this.recipeService.toggleLike(id);
   }
 }

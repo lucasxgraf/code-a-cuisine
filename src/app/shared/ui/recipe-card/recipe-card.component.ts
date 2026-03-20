@@ -11,7 +11,7 @@ import { ButtonComponent } from '../button/button.component';
 export class RecipeCardComponent {
   recipeNumber = input<number>(1);
   title = input.required<string>();
-  cookingTime = input.required<string>();
+  cookingTime = input.required<number>();
 
   viewDetails = output<void>();
 }

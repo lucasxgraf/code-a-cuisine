@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Ingredient, RecipePreferences } from '../models/recepie.model';
+import { Ingredient, RecipePreferences } from '../models/recipe.model';
 
 @Injectable({
   providedIn: 'root'

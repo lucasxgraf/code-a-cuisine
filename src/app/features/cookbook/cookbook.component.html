@@ -11,12 +11,19 @@
     <div class="cookbook__most-liked">
       <div class="cookbook__most-liked__header">
         <h2 class="cookbook__most-liked__title">Most liked recipes</h2>
-        <app-heart-button></app-heart-button>
+        <img src="assets/svg/heart_default.svg" alt="heart icon">
       </div>
 
       <div class="cookbook__most-liked__list">
         @for (recipe of featuredRecipes(); track recipe.title) {
-        <app-most-liked-card [title]="recipe.title" [cookingTime]="recipe.time" [likes]="recipe.likes" />
+        <app-most-liked-card 
+          [title]="recipe.title" 
+          [cookingTime]="recipe.cooking_time + ' min'" 
+          [likes]="recipe.displayLikes" 
+          [isLiked]="recipe.isLiked"
+          (toggleLike)="onToggleLike(recipe.id)"
+          (cardClick)="navigateToRecipe(recipe.id)"
+        />
         }
       </div>
     </div>
@@ -24,10 +31,10 @@
 
   <section class="cookbook__grid">
     @for (cuisine of cuisines(); track cuisine.id) {
-      <app-cuisine-card 
-        [name]="cuisine.name" 
+      <app-cuisine-card
+        [name]="cuisine.name"
         [imageUrl]="cuisine.image"
-        [routerLink]="['/cuisine', cuisine.id]" 
+        [routerLink]="['/cuisine', cuisine.slug]"
       />
     }
   </section>

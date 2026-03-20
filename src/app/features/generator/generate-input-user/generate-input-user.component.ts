@@ -5,7 +5,7 @@ import { toSignal } from '@angular/core/rxjs-interop'; // Wichtig
 import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs'; // Wichtig
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { IngredientListItemComponent } from '../../../shared/ui/ingredient-list-item/ingredient-list-item.component';
-import { Ingredient } from '../../../core/models/recepie.model';
+import { Ingredient } from '../../../core/models/recipe.model';
 import { IngredientService } from '../../../core/services/ingredient.service';
 import { RecipeGeneratorService } from '../../../core/services/recipe-generator.service';
 
@@ -79,7 +79,7 @@ export class GenerateInputUserComponent {
   addIngredient(): void {
     if (this.ingredientForm.valid) {
       const { name, amount, unit } = this.ingredientForm.getRawValue();
-      const newIngredient: Ingredient = { id: crypto.randomUUID(), name, amount, unit };
+      const newIngredient: Ingredient = { id: crypto.randomUUID(), name, amount, unit, is_extra: false };
 
       this.ingredients.update(current => [newIngredient, ...current]);
       this.ingredientForm.controls.name.reset();

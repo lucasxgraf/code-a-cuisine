@@ -1,9 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, untracked } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map, switchMap } from 'rxjs';
+
+import { RecipeService } from '../../core/services/recipe.service';
+import { RecipeWithCuisine } from '../../core/models/recipe.model';
 import { RecipeListRowComponent } from '../../shared/ui/recipe-list-row/recipe-list-row.component';
 import { ButtonComponent } from '../../shared/ui/button/button.component';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-cookbook-cuisine-list',
@@ -15,10 +18,53 @@ import { map } from 'rxjs';
 })
 export class CookbookCuisineListComponent {
   private route = inject(ActivatedRoute);
+  protected recipeService = inject(RecipeService);
 
-  protected cuisineId = toSignal(this.route.params.pipe(map(p => p['id'])));
+  protected cuisineId = toSignal(
+    this.route.params.pipe(map(p => p['id'] as string)),
+    { initialValue: '' }
+  );
 
-  private cuisineNames: Record<string, string> = {
+  private dbRecipes$ = this.route.params.pipe(
+    map(params => params['id'] as string),
+    filter(id => !!id),
+    switchMap(id => this.recipeService.getRecipesByCuisine(id))
+  );
+
+  private dbRecipes = toSignal(this.dbRecipes$, { initialValue: [] as RecipeWithCuisine[] });
+
+  private likedAtLoad = computed(() => {
+    const recipes = this.dbRecipes();
+    const currentLikes = untracked(() => this.recipeService.likedIds());
+    return new Set(recipes.filter(r => currentLikes.includes(r.id)).map(r => r.id));
+  });
+
+  protected displayRecipes = computed(() => {
+    const rawList = this.dbRecipes();
+    const likedIds = this.recipeService.likedIds(); 
+    const initialLikes = this.likedAtLoad();
+
+    return rawList.map(r => {
+      const isNowLiked = likedIds.includes(r.id);
+      const wasLikedAtLoad = initialLikes.has(r.id);
+
+      let likes = r.likes;
+      if (isNowLiked && !wasLikedAtLoad) likes++;
+      if (!isNowLiked && wasLikedAtLoad) likes--;
+
+      return {
+        ...r,
+        isLiked: isNowLiked,
+        liveLikes: likes
+      };
+    });
+  });
+
+  toggleLike(id: string): void {
+    this.recipeService.toggleLike(id);
+  }
+
+  private readonly cuisineNames: Record<string, string> = {
     'italian': 'Italian cuisine',
     'german': 'German cuisine',
     'indian': 'Indian cuisine',
@@ -28,18 +74,6 @@ export class CookbookCuisineListComponent {
   };
 
   protected cuisineTitle = computed(() => {
-    const id = this.cuisineId();
-    return id ? this.cuisineNames[id] : 'Cuisine';
+    return this.cuisineNames[this.cuisineId()] || 'Cuisine';
   });
-
-  recipes = signal([
-    { id: '1', title: 'Pasta with spinach and cherry tomatoes', time: '20min', likes: 66, tags: ['Vegetarian', 'Quick'] },
-    { id: '2', title: 'Creamy garlic shrimp pasta', time: '22min', likes: 32, tags: ['Quick'] },
-    { id: '3', title: 'Funghi salami pizza', time: '16min', likes: 42, tags: ['Quick'] },
-    { id: '4', title: 'Pasta with spinach and cherry tomatoes', time: '20min', likes: 66, tags: ['Vegetarian', 'Quick'] },
-    { id: '5', title: 'Creamy garlic shrimp pasta', time: '22min', likes: 32, tags: ['Quick'] },
-    { id: '6', title: 'Funghi salami pizza', time: '16min', likes: 42, tags: ['Quick'] },
-    { id: '7', title: 'Pasta with spinach and cherry tomatoes', time: '20min', likes: 66, tags: ['Vegetarian', 'Quick'] },
-    { id: '8', title: 'Creamy garlic shrimp pasta', time: '22min', likes: 32, tags: ['Quick'] }
-  ]);
 }

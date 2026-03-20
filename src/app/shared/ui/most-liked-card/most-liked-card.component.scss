@@ -13,6 +13,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  height: 100%;
 
   &:hover {
     transform: scale(1.01);
@@ -43,5 +44,15 @@
 
   &__likes {
     @include flex-layout(row, center, center, 4px);
+
+    app-heart-button {
+      width: 24px;
+      height: 24px;
+      @include flex-layout(row, center, center);
+
+      ::ng-deep .heart-btn {
+        transform: scale(0.5);
+      }
+    }
   }
 }
