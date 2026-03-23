@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
 import { RecipeGeneratorService } from '../../../core/services/recipe-generator.service';
@@ -17,6 +17,15 @@ export class LoadingComponent implements OnInit {
   private generatorService = inject(RecipeGeneratorService);
 
   showError = signal(false);
+
+  constructor() {
+    effect(() => {
+      const ids = this.generatorService.resultIds();
+      if (ids.length > 0) {
+        this.router.navigate(['/recipe-results']);
+      }
+    });
+  }
 
   ngOnInit() {
     const hasEnoughIngredients = this.generatorService.ingredients().length >= 3;
