@@ -52,21 +52,23 @@ export class PreferencesComponent {
   }
 
   generateRecipe(): void {
-    this.router.navigate(['/generate-loading']);
+  this.router.navigate(['/generate-loading']);
 
-    this.service.generateRecipes().subscribe({
-      next: (response) => {
-        if (response && response.recipeIds) {
-          this.service.resultIds.set(response.recipeIds);
-          this.service.isGenerating.set(false);
-        }
-      },
-      error: (err) => {
-        console.error('Fehler:', err);
+  this.service.generateRecipes().subscribe({
+    next: (response) => {
+      console.log('Antwort von n8n:', response); // <--- HINZUFÜGEN
+      if (response && response.recipeIds) {
+        console.log('Setze IDs:', response.recipeIds); // <--- HINZUFÜGEN
+        this.service.resultIds.set(response.recipeIds);
         this.service.isGenerating.set(false);
-        this.showError.set(true);
-        this.router.navigate(['/generate-preferences']);
+      } else {
+        console.error('Keine recipeIds in der Antwort gefunden!');
       }
-    });
-  }
+    },
+    error: (err) => {
+      console.error('HTTP Fehler:', err);
+      // ...
+    }
+  });
+}
 }

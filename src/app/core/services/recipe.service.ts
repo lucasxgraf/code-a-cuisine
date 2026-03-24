@@ -1,6 +1,6 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { SupabaseService } from './supabase.service';
-import { from, map, Observable } from 'rxjs';
+import { from, map, Observable, of } from 'rxjs';
 import { Cuisine, Recipe, RecipeWithCuisine, FullRecipe } from '../models/recipe.model';
 
 @Injectable({
@@ -72,6 +72,23 @@ export class RecipeService {
         .eq('id', id)
         .single()
     ).pipe(map(res => (res.data as FullRecipe) || null));
+  }
+
+  getRecipesByIds(ids: string[]): Observable<Recipe[]> {
+    if (!ids.length) return of([] as Recipe[]);
+
+    return from(
+      this.supabase
+        .from('recipes')
+        .select('*')
+        .in('id', ids)
+    ).pipe(
+      map(res => {
+        if (res.error) throw res.error;
+        const data = res.data as Recipe[] || [];
+        return data.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+      })
+    );
   }
 
   toggleRecipeLike(id: string, delta: number) {

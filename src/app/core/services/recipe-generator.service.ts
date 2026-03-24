@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { effect, inject, Injectable, signal } from '@angular/core';
 import { Ingredient, Recipe, RecipePreferences } from '../models/recipe.model';
 import { HttpClient } from '@angular/common/http';
 
@@ -18,7 +18,13 @@ export class RecipeGeneratorService {
     cuisine: 'Italian',
     diet: 'No preferences'
   });
-  resultIds = signal<string[]>([]);
+  resultIds = signal<string[]>(JSON.parse(localStorage.getItem('last_generated_ids') || '[]'));
+
+  constructor() {
+    effect(() => {
+      localStorage.setItem('last_generated_ids', JSON.stringify(this.resultIds()));
+    });
+  }
 
   changeCount(key: 'portions' | 'people', delta: number) {
     this.preferences.update(p => {
@@ -32,6 +38,7 @@ export class RecipeGeneratorService {
 
   reset() {
     this.ingredients.set([]);
+    this.resultIds.set([]);
   }
 
   generateRecipes() {
@@ -41,6 +48,7 @@ export class RecipeGeneratorService {
       ingredients: this.ingredients(), 
       preferences: this.preferences() 
     };
+    
     const n8nUrl = 'http://localhost:5678/webhook-test/generate-recipes';
 
     return this.http.post<{ recipeIds: string[] }>(n8nUrl, payload);
