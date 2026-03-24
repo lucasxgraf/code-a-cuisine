@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { RecipeGeneratorService } from '../../../core/services/recipe-generator.service';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
@@ -17,6 +17,8 @@ import { RecipePreferences } from '../../../core/models/recipe.model';
 export class PreferencesComponent {
   protected service = inject(RecipeGeneratorService);
   private router = inject(Router);
+
+  showError = signal(false);
 
   readonly times = [
     { label: 'Quick', sub: 'up to 20min' },
@@ -50,6 +52,23 @@ export class PreferencesComponent {
   }
 
   generateRecipe(): void {
-    this.router.navigate(['/generate-loading']);
-  }
+  this.router.navigate(['/generate-loading']);
+
+  this.service.generateRecipes().subscribe({
+    next: (response) => {
+      console.log('Antwort von n8n:', response); // <--- HINZUFÜGEN
+      if (response && response.recipeIds) {
+        console.log('Setze IDs:', response.recipeIds); // <--- HINZUFÜGEN
+        this.service.resultIds.set(response.recipeIds);
+        this.service.isGenerating.set(false);
+      } else {
+        console.error('Keine recipeIds in der Antwort gefunden!');
+      }
+    },
+    error: (err) => {
+      console.error('HTTP Fehler:', err);
+      // ...
+    }
+  });
+}
 }

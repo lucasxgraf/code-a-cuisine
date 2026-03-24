@@ -6,15 +6,16 @@
         <div class="recipe-detail__header-content-left">
           <span class="recipe-detail__time">
             <img src="assets/svg/schedule.svg" alt="Schedule">
-            Cooking time: {{ data.time }}
+            Cooking time: {{ data.timeLabel }}
           </span>
 
           <h1 class="recipe-detail__title">{{ data.title }}</h1>
 
           <div class="recipe-detail__chefs-summary">
-            <span>Cooking person: {{ data.baseChefs }}</span>
-            <app-chefs-label [chefId]="1" />
-            <app-chefs-label [chefId]="2" />
+            <span>Cooking person: {{ data.base_chefs }}</span>
+            @for (chefId of data.chefsArray; track chefId) {
+              <app-chefs-label [chefId]="chefId" />
+            }
           </div>
         </div>
 
@@ -35,10 +36,10 @@
 
           <span>Nutritional information</span>
           <div class="recipe-detail__nutrition">
-            <div class="nutrition-item"><strong>Energie</strong> {{ data.nutrition.kcal }} kcal</div>
-            <div class="nutrition-item"><strong>Protein</strong> {{ data.nutrition.protein }}</div>
-            <div class="nutrition-item"><strong>Fat</strong> {{ data.nutrition.fat }}</div>
-            <div class="nutrition-item"><strong>Carbs</strong> {{ data.nutrition.carbs }}</div>
+            <div class="nutrition-item"><strong>Energie</strong> {{ data.kcal }} kcal</div>
+            <div class="nutrition-item"><strong>Protein</strong> {{ data.protein }}</div>
+            <div class="nutrition-item"><strong>Fat</strong> {{ data.fat }}</div>
+            <div class="nutrition-item"><strong>Carbs</strong> {{ data.carbs }}</div>
           </div>
         </div>
       </div>
@@ -54,8 +55,7 @@
           <h3 class="ingredient-group__title">Your ingredients</h3>
           <ul class="ingredient-group__list">
             @for (ing of data.userIngredients; track ing.name) {
-            <app-ingredient-list-item [amount]="ing.scaledAmount" [unit]="ing.unit" [name]="ing.name"
-              [isEditable]="false" />
+            <app-ingredient-list-item [amount]="ing.scaledAmount" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
             }
           </ul>
         </div>
@@ -63,7 +63,9 @@
           <h3 class="ingredient-group__title">Extra ingredients</h3>
           <ul class="ingredient-group__list">
             @for (ing of data.extraIngredients; track ing.name) {
-            <app-ingredient-list-item [amount]="ing.amount" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
+            <app-ingredient-list-item [amount]="ing.scaledAmount" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
+            } @empty {
+              <p>No extra ingredients needed.</p>
             }
           </ul>
         </div>
@@ -76,12 +78,12 @@
       </div>
 
       <div class="recipe-detail__steps">
-        @for (step of data.steps; track step.id) {
+        @for (step of data.sortedSteps; track step.id) {
         <article class="step-card">
           <div class="step-card__header">
             <span class="step-card__number">{{ step.step_number }}.</span>
-            <h4 class="step-card__title">{{ step.title }}</h4>
-            <app-chefs-label [chefId]="step.chefId" />
+            <h4 class="step-card__title">{{ step.title || 'Instructions' }}</h4>
+            <app-chefs-label [chefId]="step.chef_id" />
           </div>
           <p class="step-card__text">{{ step.description }}</p>
         </article>

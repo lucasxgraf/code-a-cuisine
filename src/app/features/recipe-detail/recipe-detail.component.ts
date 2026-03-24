@@ -63,31 +63,28 @@ export class RecipeDetailComponent {
       return !isNaN(num) && num > 0 ? (num * factor).toFixed(0) : amount.toString();
     };
 
+    const userIngredientNames = new Set(
+      this.generatorService.ingredients().map(i => i.name.toLowerCase())
+    );
+
+    const allIngredients = data.ingredients || [];
+
     return {
-      id: data.id,
-      title: data.title,
-      time: data.cooking_time + 'min',
-      likes: data.likes,
-      baseChefs: data.base_chefs,
-      tags: data.diet_type ? [data.diet_type, 'Quick'] : ['Quick'],
-      nutrition: {
-        kcal: data.kcal,
-        protein: data.protein,
-        fat: data.fat,
-        carbs: data.carbs
-      },
-      userIngredients: data.ingredients?.filter(i => !i.is_extra).map(ing => ({
-        ...ing,
-        scaledAmount: scale(ing.amount)
-      })) || [],
-      extraIngredients: data.ingredients?.filter(i => i.is_extra).map(ing => ({
-        ...ing,
-        scaledAmount: scale(ing.amount)
-      })) || [],
-      steps: data.recipe_steps?.sort((a, b) => a.step_number - b.step_number).map(step => ({
-        ...step,
-        chefId: step.chef_id as 1 | 2 | 3 | 4
-      })) || []
+      ...data,
+      timeLabel: `${data.cooking_time} min`,
+      // Erzeugt ein Array [1, 2, ...] für die app-chefs-label Iteration
+      chefsArray: Array.from({ length: data.base_chefs }, (_, i) => i + 1),
+      // Dynamische Tags aus DB + Zeit-Kategorie
+      tags: [data.diet_type, data.cooking_time <= 25 ? 'Quick' : 'Medium'].filter(Boolean),
+      // Filterung der Zutaten basierend auf User-Input
+      userIngredients: allIngredients
+        .filter(i => userIngredientNames.has(i.name.toLowerCase()))
+        .map(ing => ({ ...ing, scaledAmount: scale(ing.amount) })),
+      extraIngredients: allIngredients
+        .filter(i => !userIngredientNames.has(i.name.toLowerCase()))
+        .map(ing => ({ ...ing, scaledAmount: scale(ing.amount) })),
+      // Schritte sortieren
+      sortedSteps: [...(data.recipe_steps || [])].sort((a, b) => a.step_number - b.step_number)
     };
   });
 

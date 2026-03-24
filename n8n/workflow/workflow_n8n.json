@@ -1,0 +1,1122 @@
+{
+  "name": "CodeACuisine",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generate-recipes",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1024,
+        -704
+      ],
+      "id": "a5ea2dca-906d-4309-9431-1ea5888cb45e",
+      "name": "[WEB] Trigger: Recipe Generation Request",
+      "webhookId": "d4849be9-c44f-4bdb-8dfb-26c1cd49ccfd"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "usage_quota",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "ip_address",
+              "keyValue": "={{ ($node[\"[WEB] Trigger: Recipe Generation Request\"].json[\"headers\"][\"x-forwarded-for\"] || \"127.0.0.1\").split(',')[0].trim() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        -704
+      ],
+      "id": "fbeccd4e-a4b7-4c52-bf24-bcbef77d3721",
+      "name": "[DB] Fetch Usage Quota by IP",
+      "alwaysOutputData": true,
+      "retryOnFail": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "H1jMAikhtJeh2HBq",
+          "name": "Supabase account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3e4ad340-53b7-4c84-aa22-27737a25d844",
+              "name": "current_count",
+              "value": "={{ \n  (() => {\n    const today = new Date().toISOString().split('T')[0];\n\n    const lastRequestDate = ($json.last_request) ? $json.last_request.split('T')[0] : '1970-01-01';\n\n    if (today !== lastRequestDate) {\n      return 0;\n    } else {\n      return $json.request_count || 0;\n    }\n  })()\n}}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -592,
+        -704
+      ],
+      "id": "6bfe016f-4922-42e9-82dd-bf7360d97996",
+      "name": "[JS] Calculate Daily Quota Logic"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b5712610-5447-4481-8421-f8d4d445fadc",
+              "leftValue": "={{ $json.user_limit_reached || $json.global_limit_reached }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        48,
+        -704
+      ],
+      "id": "88437ed7-bb83-4e76-82e7-a3c5796dce52",
+      "name": "[IF] Check: Daily Limit Reached?"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $node[\"[JS] Evaluate Quota Limits\"].json.global_limit_reached ? \"System-Limit erreicht\" : \"Dein Limit erreicht\" }}",
+        "options": {
+          "responseCode": 429
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        288,
+        -720
+      ],
+      "id": "c14adc4e-8699-46b2-8144-6af8ee09246b",
+      "name": "[RES] Error: 429 Rate Limit Reached"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f773ceff-ee11-4017-b052-f0e6bb90a71e",
+              "leftValue": "={{ $node[\"[DB] Fetch Usage Quota by IP\"].json.ip_address }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        288,
+        -512
+      ],
+      "id": "576ee529-cfdb-426b-9f42-f52c81bd8ea7",
+      "name": "[IF] Check: New User IP?"
+    },
+    {
+      "parameters": {
+        "tableId": "usage_quota",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "ip_address",
+              "fieldValue": "={{ $node[\"[WEB] Trigger: Recipe Generation Request\"].json[\"headers\"][\"x-forwarded-for\"] || \"127.0.0.1\" }}"
+            },
+            {
+              "fieldId": "request_count",
+              "fieldValue": "1"
+            },
+            {
+              "fieldId": "last_request",
+              "fieldValue": "={{ $now.toString() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        512,
+        -528
+      ],
+      "id": "1bed313c-864e-4f3f-aae5-25b6787e308c",
+      "name": "[DB] Initialize New Quota Entry",
+      "credentials": {
+        "supabaseApi": {
+          "id": "H1jMAikhtJeh2HBq",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "usage_quota",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "ip_address",
+              "condition": "eq",
+              "keyValue": "={{ $node[\"[DB] Fetch Usage Quota by IP\"].json.ip_address }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "request_count",
+              "fieldValue": "={{ $node[\"[JS] Calculate Daily Quota Logic\"].json.current_count + 1 }}"
+            },
+            {
+              "fieldId": "last_request",
+              "fieldValue": "={{ $now.toString() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        512,
+        -320
+      ],
+      "id": "216c30ee-53c3-4e20-ba74-7fc9ef5b9c37",
+      "name": "[DB] Increment Usage Counter",
+      "retryOnFail": false,
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "notesInFlow": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "H1jMAikhtJeh2HBq",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        768,
+        -320
+      ],
+      "id": "942bc1e8-1ff6-4551-8f72-d26920a8d5ad",
+      "name": "[LOG] Sync: Quota Validation Complete"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "cuisines",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "slug",
+              "condition": "ilike",
+              "keyValue": "={{ $('[WEB] Trigger: Recipe Generation Request').item.json.body.preferences.cuisine }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        512,
+        -80
+      ],
+      "id": "5738ed02-0bd1-4247-aa68-cdebc167b98b",
+      "name": "[DB] Fetch Cuisine Metadata",
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "retryOnFail": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "H1jMAikhtJeh2HBq",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{\n(function() {\n  const p = $node[\"[WEB] Trigger: Recipe Generation Request\"].json.body.preferences;\n  const ing = $node[\"[WEB] Trigger: Recipe Generation Request\"].json.body.ingredients;\n\n  // Saubere Formatierung der Zutaten für die KI\n  const inventoryText = ing.map(i => `- ${i.name} (${i.amount} ${i.unit})`).join('\\n');\n\n  return `\n### INPUT DATA:\nUSER INVENTORY:\n${inventoryText}\n\nPREFERENCES:\n- Target Cuisine: ${p.cuisine}\n- Dietary Restriction: ${p.diet}\n- Required Portions: ${p.portions}\n- Available Kitchen Staff: ${p.people} person(s)\n- Desired Complexity/Time: ${p.cookingTime} (Quick: <20m, Medium: 20-45m, Complex: >45m)\n\n### YOUR TASK:\n1. Analyze the inventory and create 3 distinct recipes matching the ${p.cuisine} style and ${p.diet} diet.\n2. Scale all quantities for ${p.portions} portions.\n3. Design a professional workflow for ${p.people} person(s). Assign tasks using chef_id (1 to ${p.people}).\n4. Calculate precise nutritional values per portion.\n5. Identify additional pantry staples used (max 3).\n\n### REQUIRED JSON STRUCTURE:\nReturn the results exaktly in the JSON format defined in your system instructions.\n\nPROCEED WITH PRECISION.`;\n})()\n}}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are the \"Code à Cuisine\" Executive Head Chef. Your intelligence is focused on three pillars: Taste Authenticity, Dietary Safety, and Operational Excellence. You generate algorithmic recipe data that is perfectly optimized for the user's kitchen inventory and staff.\n\n### DIETARY INTEGRITY (NON-NEGOTIABLE)\n- You must strictly adhere to the selected diet_type. \n- 'Vegan': Zero animal products. 'Vegetarian': No meat/fish. 'Keto': High fat, ultra-low carb.\n- Cross-check every ingredient against these rules.\n\n### CUISINE & COMPLEXITY\n- Capture the soul of the cuisine (German, Italian, Japanese, Indian, Gourmet, or Fusion). Use authentic techniques (e.g., 'Tarka' for Indian, 'Braising' for German).\n- Strictly follow the Time/Complexity categories:\n  - 'Quick': Total time < 20 min.\n  - 'Medium': Total time 20-45 min.\n  - 'Complex': Total time > 45 min (sophisticated steps).\n\n### OPERATIONAL RULES (User Stories 6, 7, 8, 9)\n1. INVENTORY RULE: Use at least 70% of the user's provided ingredients in each recipe.\n2. PANTRY STAPLES: You may add MAX 3 basic staples that are not listed by the user. Mark them clearly in the ingredients list. Also dont forget traditional spices for each cuisine.\n3. STAFF OPTIMIZATION: \n   - Assign tasks via 'chef_id' (1 to number of people).\n   - If more than 1 person is cooking, design the workflow to minimize downtime. \n   - Use 'is_parallel: true' for simultaneous tasks (e.g., Chef 1 preps, Chef 2 starts the pan).\n   - Utilize waiting times (oven/simmering) for other prep tasks.\n4. SCALING: All ingredient amounts must be mathematically scaled to the requested portion count (1-12).\n\n### OUTPUT FORMAT RULES\n- Output exactly 3 unique recipes.\n- cooking_time, kcal, step_number, chef_id, and duration_min MUST be INTEGERS.\n- 'is_parallel' MUST be a BOOLEAN.\n- Return ONLY valid JSON. No conversational text before or after.\n\nJSON STRUCTURE:\n{\n  \"recipes\": [\n    {\n      \"title\": \"String\",\n      \"description\": \"String (US 12 summary)\",\n      \"cooking_time\": 25,\n      \"diet_type\": \"String\",\n      \"kcal\": 500,\n      \"protein\": \"20g\",\n      \"fat\": \"15g\",\n      \"carbs\": \"60g\",\n      \"ingredients\": [\n        {\"name\": \"String\", \"amount\": 100, \"unit\": \"g\"}\n      ],\n      \"steps\": [\n        {\n          \"step_number\": 1,\n          \"chef_id\": 1,\n          \"title\": \"String\",\n          \"description\": \"String\",\n          \"duration_min\": 10,\n          \"is_parallel\": false\n        }\n      ]\n    }\n  ]\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        720,
+        -80
+      ],
+      "id": "83a7aa18-4032-41fb-8ade-7f5448baa089",
+      "name": "[AI] Generate Recipe Collection (LLM)"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        720,
+        96
+      ],
+      "id": "60982573-a590-41e0-8bed-2f101073fce5",
+      "name": "[AI] LLM Config: Groq Llama-3",
+      "credentials": {
+        "groqApi": {
+          "id": "VhtisBGS8PSmttni",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let rawText = $node[\"[AI] Generate Recipe Collection (LLM)\"].json.output;\n\nif (rawText.includes('```json')) {\n    rawText = rawText.split('```json')[1].split('```')[0];\n} else if (rawText.includes('```')) {\n    rawText = rawText.split('```')[1].split('```')[0];\n}\n\nrawText = rawText.trim();\n\ntry {\n  const data = JSON.parse(rawText);\n  return data.recipes; \n} catch (e) {\n  throw new Error(\"JSON Parsing fehlgeschlagen: \" + e.message + \". Inhalt war: \" + rawText);\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1088,
+        -80
+      ],
+      "id": "b64d47f2-f0ac-4a74-869a-a45ba3a0a660",
+      "name": "[JS] Parse & Sanitize AI Output"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1360,
+        -80
+      ],
+      "id": "e662913a-4959-4baa-8f3e-3e51dce852c0",
+      "name": "[LOOP] Iterate over Generated Recipes"
+    },
+    {
+      "parameters": {
+        "tableId": "recipes",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "title",
+              "fieldValue": "={{ $json.title }}"
+            },
+            {
+              "fieldId": "description",
+              "fieldValue": "={{ $json.description }}"
+            },
+            {
+              "fieldId": "cooking_time",
+              "fieldValue": "={{ $json.cooking_time }}"
+            },
+            {
+              "fieldId": "base_portions",
+              "fieldValue": "={{ $('[WEB] Trigger: Recipe Generation Request').item.json.body.preferences.portions }}"
+            },
+            {
+              "fieldId": "base_chefs",
+              "fieldValue": "={{ $('[WEB] Trigger: Recipe Generation Request').item.json.body.preferences.people }}"
+            },
+            {
+              "fieldId": "diet_type",
+              "fieldValue": "={{ $json.diet_type }}"
+            },
+            {
+              "fieldId": "kcal",
+              "fieldValue": "={{ $json.kcal }}"
+            },
+            {
+              "fieldId": "protein",
+              "fieldValue": "={{ $json.protein }}"
+            },
+            {
+              "fieldId": "fat",
+              "fieldValue": "={{ $json.fat }}"
+            },
+            {
+              "fieldId": "carbs",
+              "fieldValue": "={{ $json.carbs }}"
+            },
+            {
+              "fieldId": "cuisine_id",
+              "fieldValue": "={{ $node[\"[DB] Fetch Cuisine Metadata\"].json.id }}"
+            },
+            {
+              "fieldId": "input_hash",
+              "fieldValue": "={{ $node[\"[JS] Generate Input Hash (Cache Key)\"].json.input_hash }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        -64
+      ],
+      "id": "8a666a3d-a83a-4155-9cc5-bf73b0dbee3b",
+      "name": "[DB] Persist Recipe Master Data",
+      "credentials": {
+        "supabaseApi": {
+          "id": "H1jMAikhtJeh2HBq",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const newRecipeId = $node[\"[DB] Persist Recipe Master Data\"].json.id;\nconst currentRecipe = $node[\"[LOOP] Iterate over Generated Recipes\"].json;\n\nconst preparedIngredients = currentRecipe.ingredients.map(ing => {\n  return {\n    recipe_id: newRecipeId,\n    name: ing.name,\n    amount: ing.amount,\n    unit: ing.unit,\n    is_extra: false\n  };\n});\n\nconst preparedSteps = currentRecipe.steps.map(step => {\n  return {\n    recipe_id: newRecipeId,\n    step_number: step.step_number,\n    chef_id: step.chef_id,\n    title: step.title,\n    description: step.description,\n    duration_min: step.duration_min || 0,\n    is_parallel: step.is_parallel || false\n  };\n});\n\nreturn {\n  ingredients: preparedIngredients,\n  steps: preparedSteps,\n  recipe_id: newRecipeId\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1968,
+        -64
+      ],
+      "id": "cec4c516-d308-4ec9-9a5b-16cb41cdbc99",
+      "name": "[JS] Map Relational Data (FK)"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "steps",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2192,
+        -64
+      ],
+      "id": "04fe72c9-d9d6-4949-9e37-07a0a51b1d33",
+      "name": "[JS] Extract Recipe Steps",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "tableId": "recipe_steps",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "recipe_id",
+              "fieldValue": "={{ $json.recipe_id }}"
+            },
+            {
+              "fieldId": "step_number",
+              "fieldValue": "={{ $json.step_number }}"
+            },
+            {
+              "fieldId": "chef_id",
+              "fieldValue": "={{ $json.chef_id }}"
+            },
+            {
+              "fieldId": "title",
+              "fieldValue": "={{ $json.title }}"
+            },
+            {
+              "fieldId": "description",
+              "fieldValue": "={{ $json.description }}"
+            },
+            {
+              "fieldId": "duration_min",
+              "fieldValue": "={{ $json.duration_min }}"
+            },
+            {
+              "fieldId": "is_parallel",
+              "fieldValue": "={{ $json.is_parallel }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2384,
+        -64
+      ],
+      "id": "97fd11f2-0795-4380-9a45-43369230790c",
+      "name": "[DB] Bulk Insert Recipe Steps",
+      "credentials": {
+        "supabaseApi": {
+          "id": "H1jMAikhtJeh2HBq",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "ingredients",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2192,
+        144
+      ],
+      "id": "d5f32744-e69f-4e0c-aa40-f0f8955dc45e",
+      "name": "[JS] Extract Recipe Ingredients"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2624,
+        128
+      ],
+      "id": "71229cac-b815-4d45-bd44-b5b41888e749",
+      "name": "[LOOP] Sync: Recipe Item Storage"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "recipe_id",
+              "renameField": true,
+              "outputFieldName": "recipe_ids"
+            }
+          ]
+        },
+        "options": {
+          "includeBinaries": false
+        }
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1968,
+        -704
+      ],
+      "id": "f61501c0-75bf-49d9-bb55-825c8429d8d0",
+      "name": "[JS] Aggregate Unique Recipe IDs",
+      "retryOnFail": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ \"recipeIds\": $json.recipe_ids }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2368,
+        -704
+      ],
+      "id": "97eaf197-f61e-4c0f-8656-b61f611003fa",
+      "name": "[RES] Success: Return ID Collection"
+    },
+    {
+      "parameters": {
+        "tableId": "ingredients",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "recipe_id",
+              "fieldValue": "={{ $json.recipe_id }}"
+            },
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $json.name }}"
+            },
+            {
+              "fieldId": "amount",
+              "fieldValue": "={{ $json.amount }}"
+            },
+            {
+              "fieldId": "unit",
+              "fieldValue": "={{ $json.unit }}"
+            },
+            {
+              "fieldId": "is_extra",
+              "fieldValue": "={{ $json.is_extra }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2384,
+        144
+      ],
+      "id": "5e502b28-a4b8-4c47-8b1f-739fc236dac8",
+      "name": "[DB] Bulk Insert Recipe Ingredients",
+      "credentials": {
+        "supabaseApi": {
+          "id": "H1jMAikhtJeh2HBq",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $node[\"[WEB] Trigger: Recipe Generation Request\"].json.body;\nconst p = body.preferences;\nconst ing = body.ingredients;\n\nconst sortedIng = [...ing]\n  .sort((a, b) => a.name.localeCompare(b.name))\n  .map(i => `${i.name.toLowerCase()}-${i.amount}-${i.unit.toLowerCase()}`)\n  .join('|');\n\nconst config = `${p.cuisine}-${p.diet}-${p.portions}-${p.cookingTime}-${p.people}`.toLowerCase();\n\nreturn { input_hash: `${sortedIng}#${config}` };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        -320
+      ],
+      "id": "e038989c-4580-405b-84b0-0e039fec5e69",
+      "name": "[JS] Generate Input Hash (Cache Key)"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "recipes",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "input_hash",
+              "condition": "eq",
+              "keyValue": "={{ $json.input_hash }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1168,
+        -320
+      ],
+      "id": "4fc65c87-b368-4f27-9f7e-19d80d052e16",
+      "name": "[DB] Search for Existing Recipe Cache",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "H1jMAikhtJeh2HBq",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9c97f87b-3715-4eab-ae57-eeae8fd1b906",
+              "leftValue": "={{ $node[\"[DB] Search for Existing Recipe Cache\"].json.length || 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1360,
+        -320
+      ],
+      "id": "e112df81-e25b-4b74-b734-a62b628f114b",
+      "name": "[IF] Cache Hit?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9ffe66b9-d0ee-48a3-8a46-030457523da8",
+              "name": "recipe_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1568,
+        -704
+      ],
+      "id": "0c7cc53b-d5c5-4fed-8161-ca11f59e58db",
+      "name": "[JS] Map Cache IDs"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst uniqueIds = [...new Set($input.first().json.recipe_ids)];\n\nreturn {\n  recipe_ids: uniqueIds\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2176,
+        -704
+      ],
+      "id": "fc67a86a-c865-4dc2-bb45-05b6fa78576b",
+      "name": "[JS] Deduplicate Recipe IDs"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "usage_quota",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "last_request",
+              "condition": "gte",
+              "keyValue": "={{ new Date().toISOString().split('T')[0] }}T00:00:00.000Z"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        -704
+      ],
+      "id": "35d0de73-3881-4663-94d5-002ebce619d0",
+      "name": "[DB] Fetch Global Daily Usage",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "H1jMAikhtJeh2HBq",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const userCount = $node[\"[JS] Calculate Daily Quota Logic\"].json.current_count || 0;\n\nconst allRecords = $node[\"[DB] Fetch Global Daily Usage\"].all();\nconst globalSum = allRecords.reduce((sum, item) => sum + (item.json.request_count || 0), 0);\n\nreturn {\n  user_count: userCount,\n  global_count: globalSum,\n  user_limit_reached: userCount >= 3,\n  global_limit_reached: globalSum >= 12\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -176,
+        -704
+      ],
+      "id": "6b8a18f5-c4a4-4558-a685-98e8d51521bb",
+      "name": "[JS] Evaluate Quota Limits"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "[WEB] Trigger: Recipe Generation Request": {
+      "main": [
+        [
+          {
+            "node": "[DB] Fetch Usage Quota by IP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[DB] Fetch Usage Quota by IP": {
+      "main": [
+        [
+          {
+            "node": "[JS] Calculate Daily Quota Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[JS] Calculate Daily Quota Logic": {
+      "main": [
+        [
+          {
+            "node": "[DB] Fetch Global Daily Usage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[IF] Check: Daily Limit Reached?": {
+      "main": [
+        [
+          {
+            "node": "[RES] Error: 429 Rate Limit Reached",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "[IF] Check: New User IP?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[IF] Check: New User IP?": {
+      "main": [
+        [
+          {
+            "node": "[DB] Initialize New Quota Entry",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "[DB] Increment Usage Counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[DB] Initialize New Quota Entry": {
+      "main": [
+        [
+          {
+            "node": "[LOG] Sync: Quota Validation Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[DB] Increment Usage Counter": {
+      "main": [
+        [
+          {
+            "node": "[LOG] Sync: Quota Validation Complete",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        []
+      ]
+    },
+    "[LOG] Sync: Quota Validation Complete": {
+      "main": [
+        [
+          {
+            "node": "[JS] Generate Input Hash (Cache Key)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[DB] Fetch Cuisine Metadata": {
+      "main": [
+        [
+          {
+            "node": "[AI] Generate Recipe Collection (LLM)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[AI] Generate Recipe Collection (LLM)": {
+      "main": [
+        [
+          {
+            "node": "[JS] Parse & Sanitize AI Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[AI] LLM Config: Groq Llama-3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "[AI] Generate Recipe Collection (LLM)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[JS] Parse & Sanitize AI Output": {
+      "main": [
+        [
+          {
+            "node": "[LOOP] Iterate over Generated Recipes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[LOOP] Iterate over Generated Recipes": {
+      "main": [
+        [
+          {
+            "node": "[JS] Aggregate Unique Recipe IDs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "[DB] Persist Recipe Master Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[DB] Persist Recipe Master Data": {
+      "main": [
+        [
+          {
+            "node": "[JS] Map Relational Data (FK)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[JS] Map Relational Data (FK)": {
+      "main": [
+        [
+          {
+            "node": "[JS] Extract Recipe Ingredients",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "[JS] Extract Recipe Steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[JS] Extract Recipe Steps": {
+      "main": [
+        [
+          {
+            "node": "[DB] Bulk Insert Recipe Steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[DB] Bulk Insert Recipe Steps": {
+      "main": [
+        [
+          {
+            "node": "[LOOP] Sync: Recipe Item Storage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[JS] Extract Recipe Ingredients": {
+      "main": [
+        [
+          {
+            "node": "[DB] Bulk Insert Recipe Ingredients",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[LOOP] Sync: Recipe Item Storage": {
+      "main": [
+        [
+          {
+            "node": "[LOOP] Iterate over Generated Recipes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[JS] Aggregate Unique Recipe IDs": {
+      "main": [
+        [
+          {
+            "node": "[JS] Deduplicate Recipe IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[DB] Bulk Insert Recipe Ingredients": {
+      "main": [
+        [
+          {
+            "node": "[LOOP] Sync: Recipe Item Storage",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "[JS] Generate Input Hash (Cache Key)": {
+      "main": [
+        [
+          {
+            "node": "[DB] Search for Existing Recipe Cache",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[DB] Search for Existing Recipe Cache": {
+      "main": [
+        [
+          {
+            "node": "[IF] Cache Hit?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[IF] Cache Hit?": {
+      "main": [
+        [
+          {
+            "node": "[JS] Map Cache IDs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "[DB] Fetch Cuisine Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[JS] Map Cache IDs": {
+      "main": [
+        [
+          {
+            "node": "[JS] Aggregate Unique Recipe IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[JS] Deduplicate Recipe IDs": {
+      "main": [
+        [
+          {
+            "node": "[RES] Success: Return ID Collection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[DB] Fetch Global Daily Usage": {
+      "main": [
+        [
+          {
+            "node": "[JS] Evaluate Quota Limits",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[JS] Evaluate Quota Limits": {
+      "main": [
+        [
+          {
+            "node": "[IF] Check: Daily Limit Reached?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "29ecdcb5-e0f6-41b9-ba6b-adeffd8448d2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9d65fe73471b58b723a5b5cfbe47c5bef40f5f920bf46d734f00df17904f754f"
+  },
+  "id": "jdeaGGyHHs5znJQy",
+  "tags": []
+}
