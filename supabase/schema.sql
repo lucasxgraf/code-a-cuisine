@@ -1,4 +1,3 @@
--- 1. Cuisines Tabelle (Stammdaten)
 create table public.cuisines (
   id uuid not null default extensions.uuid_generate_v4 (),
   name text not null,
@@ -7,7 +6,6 @@ create table public.cuisines (
   constraint cuisines_slug_key unique (slug)
 );
 
--- 2. Usage Quota Tabelle (Rate Limiting)
 create table public.usage_quota (
   ip_address inet not null,
   request_count integer null default 0,
@@ -15,7 +13,6 @@ create table public.usage_quota (
   constraint usage_quota_pkey primary key (ip_address)
 );
 
--- 3. Recipes Tabelle (Hauptdaten mit Cache-Fingerabdruck)
 create table public.recipes (
   id uuid not null default extensions.uuid_generate_v4 (),
   cuisine_id uuid null,
@@ -36,10 +33,8 @@ create table public.recipes (
   constraint recipes_cuisine_id_fkey foreign KEY (cuisine_id) references cuisines (id)
 );
 
--- Index für schnelles Caching erstellen
 CREATE INDEX idx_recipes_input_hash ON public.recipes(input_hash);
 
--- 4. Recipe Steps Tabelle (Relationale Daten)
 create table public.recipe_steps (
   id uuid not null default extensions.uuid_generate_v4 (),
   recipe_id uuid null,
@@ -53,7 +48,6 @@ create table public.recipe_steps (
   constraint recipe_steps_recipe_id_fkey foreign KEY (recipe_id) references recipes (id) on delete CASCADE
 );
 
--- 5. Ingredients Tabelle (Relationale Daten)
 create table public.ingredients (
   id uuid not null default extensions.uuid_generate_v4 (),
   recipe_id uuid null,
@@ -64,3 +58,14 @@ create table public.ingredients (
   constraint ingredients_pkey primary key (id),
   constraint ingredients_recipe_id_fkey foreign KEY (recipe_id) references recipes (id) on delete CASCADE
 );
+
+CREATE OR REPLACE FUNCTION handle_recipe_like(recipe_id uuid, increment_val int)
+RETURNS void AS $$
+BEGIN
+  UPDATE recipes
+  SET likes = likes + increment_val
+  WHERE id = recipe_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE INDEX IF NOT EXISTS idx_usage_quota_last_request ON public.usage_quota(last_request);
