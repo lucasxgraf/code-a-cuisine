@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, signal, computed, inject } from '@a
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop'; // Wichtig
-import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs'; // Wichtig
+import { debounceTime, distinctUntilChanged, switchMap, of, max } from 'rxjs'; // Wichtig
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { IngredientListItemComponent } from '../../../shared/ui/ingredient-list-item/ingredient-list-item.component';
 import { Ingredient } from '../../../core/models/recipe.model';
@@ -26,8 +26,8 @@ export class GenerateInputUserComponent {
   private generatorService = inject(RecipeGeneratorService);
 
   ingredientForm = new FormGroup({
-    name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    amount: new FormControl<number | string>('100', { nonNullable: true, validators: [Validators.required] }),
+    name: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(50), Validators.pattern(/^[a-zA-ZäöüÄÖÜß\s-]+$/)] }),
+    amount: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(5), Validators.minLength(1), Validators.pattern(/^[0-9]+$/)] }),
     unit: new FormControl('gram', { nonNullable: true }),
   });
 
@@ -75,15 +75,52 @@ export class GenerateInputUserComponent {
     this.ingredientForm.patchValue({ unit });
     this.closeAllDropdowns();
   }
+  
+  protected onAmountInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const sanitized = input.value.replace(/[^0-9]/g, '');
+    
+    if (input.value !== sanitized) {
+      input.value = sanitized;
+      this.ingredientForm.controls.amount.setValue(sanitized);
+    }
+  }
+
+  protected onNameInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const sanitized = input.value.replace(/[^a-zA-ZäöüÄÖÜß\s-]/g, '');
+    
+    if (input.value !== sanitized) {
+      input.value = sanitized;
+      this.ingredientForm.controls.name.setValue(sanitized);
+    }
+  }
+  
+  protected hasError(controlName: 'name' | 'amount'): boolean {
+    const control = this.ingredientForm.get(controlName);
+    return !!(control?.invalid && control?.touched);
+  }
+
+  private sanitizeInput(val: string): string {
+    return val.replace(/<[^>]*>?/gm, '').trim();
+  }
 
   addIngredient(): void {
     if (this.ingredientForm.valid) {
-      const { name, amount, unit } = this.ingredientForm.getRawValue();
-      const newIngredient: Ingredient = { id: crypto.randomUUID(), name, amount, unit, is_extra: false };
+      const raw = this.ingredientForm.getRawValue();
+      const newIngredient: Ingredient = { 
+        id: crypto.randomUUID(), 
+        name: this.sanitizeInput(raw.name),
+        amount: Number(raw.amount),
+        unit: raw.unit, 
+        is_extra: false 
+      };
 
-      this.ingredients.update(current => [newIngredient, ...current]);
-      this.ingredientForm.controls.name.reset();
-      this.closeAllDropdowns();
+      this.generatorService.ingredients.update(current => [newIngredient, ...current]);
+      this.ingredientForm.reset({ name: '', amount: '100', unit: 'gram' });
+      this.ingredientForm.markAsUntouched();
+    } else {
+      this.ingredientForm.markAllAsTouched();
     }
   }
 

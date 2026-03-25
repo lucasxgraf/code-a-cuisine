@@ -24,7 +24,17 @@ export class IngredientListItemComponent {
   editAmount: number | string = '';
   editUnit: string = '';
 
-  protected displayQuantity = computed(() => `${this.amount()} ${this.unit()}`);
+  protected displayQuantity = computed(() => {
+    const val = this.amount();
+    const unit = this.unitMap[this.unit().toLowerCase()] ?? this.unit();
+    return `${val}${unit}`;
+  });
+
+  private readonly unitMap: Record<string, string> = {
+    'gram': 'g',
+    'ml': 'ml',
+    'piece': ''
+  };
 
   startEdit() {
     this.editAmount = this.amount();

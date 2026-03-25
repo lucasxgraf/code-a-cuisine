@@ -8,10 +8,20 @@
 
 .ingredient-item {
   &__content {
-    @include flex-layout(row, flex-start, center, 12px);
+    @include flex-layout(row, flex-start, flex-start, 12px);
     font-family: $font-quicksand;
     color: $color-dark-green;
     flex: 1;
+    overflow: hidden;
+    width: 100%;
+
+    &--editing {
+      .ingredient-item__bullet,
+      .ingredient-item__name {
+        transform: translateY(8px);
+        transition: transform 0.3s ease;
+      }
+    }
   }
 
   &__bullet {
@@ -22,6 +32,11 @@
 
   &__quantity, &__name {
     font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+    min-width: 56px;
   }
 
   &__actions {
