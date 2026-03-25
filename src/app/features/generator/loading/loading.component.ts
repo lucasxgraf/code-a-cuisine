@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
 import { RecipeGeneratorService } from '../../../core/services/recipe-generator.service';
@@ -15,30 +15,46 @@ export class LoadingComponent {
   private router = inject(Router);
   private generatorService = inject(RecipeGeneratorService);
 
-  showError = signal(false);
+  protected readonly showLocalError = signal(false);
+
+  protected readonly activeError = computed(() => {
+    const backendMsg = this.generatorService.errorMessage();
+    
+    if (backendMsg) {
+      return { title: 'Wait a second...', message: backendMsg };
+    }
+
+    if (this.showLocalError()) {
+      return { 
+        title: 'Ups! Something is missing...', 
+        message: 'It looks like the generation took too long or your ingredients are insufficient. Please check and try again.' 
+      };
+    }
+
+    return null;
+  });
 
   constructor() {
     effect(() => {
-      const ids = this.generatorService.resultIds();
-      if (ids.length > 0) {
+      if (this.generatorService.resultIds().length > 0) {
         this.router.navigate(['/generate-result']);
       }
     });
-    const hasIngredients = this.generatorService.ingredients().length >= 3;
-    
+
+    const hasIngredients = this.generatorService.ingredients().length >= 1;
     if (!hasIngredients) {
-      this.showError.set(true);
+      this.showLocalError.set(true);
     }
 
     setTimeout(() => {
-      if (this.generatorService.resultIds().length === 0 && !this.showError()) {
-        this.showError.set(true);
+      if (this.generatorService.resultIds().length === 0 && !this.activeError()) {
+        this.showLocalError.set(true);
       }
-    }, 30000); 
+    }, 60000);
   }
 
   handleErrorClose() {
-    this.showError.set(false);
-    this.router.navigate(['/generate-preferences']);
+    this.generatorService.reset();
+    this.router.navigate(['/generate-input-user']);
   }
 }

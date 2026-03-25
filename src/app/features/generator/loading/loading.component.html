@@ -9,10 +9,10 @@
     </h1>
   </div>
 
-  @if (showError()) {
+  @if (activeError(); as error) {
     <app-error-modal 
-      title="Ups! Not quite enough..."
-      message="It looks like some ingredient quantities aren't sufficient for your selected servings. Please add or adjust quantities and try again."
+      [title]="error.title"
+      [message]="error.message"
       actionLabel="Go back to ingredients"
       (close)="handleErrorClose()"
     />

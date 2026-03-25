@@ -56,19 +56,15 @@ export class PreferencesComponent {
 
   this.service.generateRecipes().subscribe({
     next: (response) => {
-      console.log('Antwort von n8n:', response); // <--- HINZUFÜGEN
-      if (response && response.recipeIds) {
-        console.log('Setze IDs:', response.recipeIds); // <--- HINZUFÜGEN
+      if (response?.recipeIds) {
         this.service.resultIds.set(response.recipeIds);
-        this.service.isGenerating.set(false);
-      } else {
-        console.error('Keine recipeIds in der Antwort gefunden!');
       }
     },
     error: (err) => {
-      console.error('HTTP Fehler:', err);
-      // ...
+      this.service.isGenerating.set(false);
+      const msg = err.error?.message || 'An unexpected error occurred.';
+      this.service.errorMessage.set(msg);
     }
-  });
-}
+    });
+  }
 }

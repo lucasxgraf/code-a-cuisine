@@ -1,5 +1,4 @@
 @use '../../../../styles/variables' as *;
-
 .generate-input {
   &__header {
     text-align: center;
@@ -160,7 +159,15 @@
 
   &__list {
     max-height: 184px;
-    overflow-y: auto;
+
+    ::ng-deep {
+      .ingredient-item__name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 140px;
+      }
+    }
 
     &::-webkit-scrollbar {
       width: 4px;
@@ -196,9 +203,9 @@
 }
 
 .error-msg {
+  
   color: #e74c3c;
   font-family: $font-quicksand;
   font-weight: 600;
   display: block;
-  
 }
