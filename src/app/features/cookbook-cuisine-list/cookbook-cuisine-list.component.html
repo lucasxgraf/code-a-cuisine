@@ -28,9 +28,39 @@
     }
   </div>
 
+  <section class="cuisine-list__filters">
+    <div class="cuisine-list__filter-group">
+      <span class="cuisine-list__filter-label">Diet:</span>
+      <div class="cuisine-list__filter-buttons">
+        @for (opt of dietOptions; track opt) {
+          <app-tag 
+            [variant]="selectedDiet() === opt ? 'green' : 'creme'"
+            (click)="setDietFilter(opt)"
+          >
+            {{ opt }}
+          </app-tag>
+        }
+      </div>
+    </div>
+
+    <div class="cuisine-list__filter-group">
+      <span class="cuisine-list__filter-label">Time:</span>
+      <div class="cuisine-list__filter-buttons">
+        @for (opt of timeOptions; track opt) {
+          <app-tag 
+            [variant]="selectedTime() === opt ? 'green' : 'creme'"
+            (click)="setTimeFilter(opt)"
+          >
+            {{ opt }}
+          </app-tag>
+        }
+      </div>
+    </div>
+  </section>
+
   <section class="cuisine-list__content">
     <div class="cuisine-list__rows">
-      @for (recipe of displayRecipes(); track recipe.id; let i = $index) {
+      @for (recipe of filteredRecipes(); track recipe.id; let i = $index) {
       <app-recipe-list-row 
       [index]="i + 1" 
       [title]="recipe.title" 

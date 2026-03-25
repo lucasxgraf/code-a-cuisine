@@ -15,6 +15,22 @@
     @include flex-layout(row, center, center);
   }
 
+  &__filters {
+    @include flex-layout(row, center, center, 40px);
+    padding: 16px 0 40px 0;
+    font-size: 1.25rem;
+  }
+
+  &__filter-group {
+    @include flex-layout(column, center, flex-start, 16px);
+    font-weight: 700;
+    font-family: $font-quicksand;
+  }
+
+  &__filter-buttons {
+    @include flex-layout(row, center, center, 16px);
+  }
+
   &__content {
     max-width: 900px;
     margin: 0 auto;
