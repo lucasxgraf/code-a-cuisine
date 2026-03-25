@@ -51,24 +51,34 @@
       </div>
 
       <div class="recipe-detail__ingredients-grid">
-        <div class="ingredient-group">
-          <h3 class="ingredient-group__title">Your ingredients</h3>
-          <ul class="ingredient-group__list">
-            @for (ing of data.userIngredients; track ing.name) {
-            <app-ingredient-list-item [amount]="ing.scaledAmount" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
-            }
-          </ul>
-        </div>
-        <div class="ingredient-group">
-          <h3 class="ingredient-group__title">Extra ingredients</h3>
-          <ul class="ingredient-group__list">
-            @for (ing of data.extraIngredients; track ing.name) {
-            <app-ingredient-list-item [amount]="ing.scaledAmount" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
-            } @empty {
-              <p>No extra ingredients needed.</p>
-            }
-          </ul>
-        </div>
+        @if (data.isFromGenerator) {
+          <div class="ingredient-group">
+            <h3 class="ingredient-group__title">Your ingredients</h3>
+            <ul class="ingredient-group__list">
+              @for (ing of data.userIngredients; track ing.name) {
+                <app-ingredient-list-item [amount]="ing.scaledAmount" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
+              }
+            </ul>
+          </div>
+          <div class="ingredient-group">
+            <h3 class="ingredient-group__title">Extra ingredients</h3>
+            <ul class="ingredient-group__list">
+              @for (ing of data.extraIngredients; track ing.name) {
+                <app-ingredient-list-item [amount]="ing.scaledAmount" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
+              } @empty {
+                <p>No extra ingredients needed.</p>
+              }
+            </ul>
+          </div>
+        } @else {
+          <div class="ingredient-group ingredient-group--full">
+            <ul class="ingredient-group__list">
+              @for (ing of data.displayIngredients; track ing.name) {
+                <app-ingredient-list-item [amount]="ing.scaledAmount" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
+              }
+            </ul>
+          </div>
+        }
       </div>
     </section>
 
