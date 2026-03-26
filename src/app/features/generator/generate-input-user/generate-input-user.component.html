@@ -13,21 +13,34 @@
           <label class="generate-input__label">Ingredient</label>
           <div class="generate-input__field-wrapper">
             <div class="generate-input__autocomplete-wrapper">
-              <input 
+              <input
+              id="ingredientInput"
               type="text" 
               formControlName="name" 
               placeholder="Pasta"
               maxlength="50"
-              class="generate-input__input" 
+              class="generate-input__input"
+              role="combobox"
+              aria-autocomplete="list"
+              [attr.aria-expanded]="isIngredientDropdownOpen() && filteredIngredients().length > 0"
+              aria-haspopup="listbox"
               (input)="toggleIngredientDropdown($event)"
               (click)="toggleIngredientDropdown($event)"
               (input)="onNameInput($event)"
-              (keydown.enter)="addIngredient()"
+              (keydown)="handleKeydown($event)"
+              (keydown.enter)="activeSelectedIndex() === -1 && addIngredient()"
               >
               @if (isIngredientDropdownOpen() && filteredIngredients().length > 0) {
-                <ul class="generate-input__dropdown">
-                  @for (item of filteredIngredients(); track item) {
-                    <li class="generate-input__dropdown-item" (click)="selectIngredient(item, $event)">
+                <ul class="generate-input__dropdown" role="listbox">
+                  @for (item of filteredIngredients(); track item; let i = $index) {
+                    <li class="generate-input__dropdown-item" 
+                      (click)="selectIngredient(item, $event)"
+                      role="option"
+                      [id]="'opt-' + i"
+                      [class.generate-input__dropdown-item--active]="i === activeSelectedIndex()"
+                      [attr.aria-selected]="i === activeSelectedIndex()"
+                      (mouseenter)="activeSelectedIndex.set(i)"
+                    >
                       {{ item }}
                     </li>
                   }

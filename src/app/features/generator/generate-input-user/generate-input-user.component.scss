@@ -134,6 +134,11 @@
     &:hover {
       background-color: rgba($color-middle-green, 0.2);
     }
+
+    &--active {
+      background-color: rgba($color-middle-green, 0.2) !important;
+      font-weight: 600;
+    }
   }
 
   &__add-btn {
@@ -158,7 +163,9 @@
   }
 
   &__list {
-    max-height: 184px;
+    max-height: 185px;
+    overflow-y: auto;
+    padding-right: 8px;
 
     ::ng-deep {
       .ingredient-item__name {
