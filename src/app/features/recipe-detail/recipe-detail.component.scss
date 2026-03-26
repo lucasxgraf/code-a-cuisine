@@ -132,21 +132,46 @@
       font-family: $font-quicksand;
       font-weight: 500;
       
-      &__header {
-        @include flex-layout(row, space-between, center, 16px);
+      &__content {
+        @include flex-layout(row, space-between, center);
         margin-bottom: 16px;
-      }
-      
-      &__number {
-        font-size: 1.25rem;
-        background-color: $color-creme;
-        padding: 4px 8px;
-        border-radius: 20px;
+        height: 100%;
       }
 
-      &__title {
-        font-size: 1.25rem;
-        flex-grow: 1;
+      &__left {
+        @include flex-layout(column, flex-start, flex-start, 16px);
+        height: 100%;
+        flex: 1;
+        min-width: 0;
+
+        &-header {
+          @include flex-layout(row, flex-start, center, 8px);
+        }
+
+        &-title {
+          font-size: 1.25rem;
+          flex-grow: 1;
+        }
+
+        &-number {
+          font-size: 1.25rem;
+          background-color: $color-creme;
+          padding: 4px 8px;
+          border-radius: 20px;
+        }
+
+        &-description {
+          font-size: 1rem;
+        }
+      }
+
+      &__right {
+        @include flex-layout(column, space-between, center);
+        height: 100%;
+
+        &-time {
+          @include flex-layout(row, center, center, 8px);
+        }
       }
     }
 
