@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, switchMap } from 'rxjs';
@@ -26,6 +26,17 @@ export class CookbookCuisineListComponent {
 
   protected readonly selectedDiet = signal<string>('All');
   protected readonly selectedTime = signal<string>('All');
+
+  protected readonly pageSize = 10;
+  protected readonly currentPage = signal<number>(0);
+
+  constructor() {
+    effect(() => {
+      this.selectedDiet();
+      this.selectedTime();
+      untracked(() => this.currentPage.set(0));
+    });
+  }
 
   protected cuisineId = toSignal(
     this.route.params.pipe(map(p => p['id'] as string)),
@@ -89,10 +100,7 @@ export class CookbookCuisineListComponent {
     const diet = this.selectedDiet();
     const time = this.selectedTime();
 
-    if (diet !== 'All') {
-      list = list.filter(r => r.diet_type === diet);
-    }
-
+    if (diet !== 'All') list = list.filter(r => r.diet_type === diet);
     if (time !== 'All') {
       list = list.filter(r => {
         if (time === 'Quick') return r.cooking_time <= 25;
@@ -101,9 +109,28 @@ export class CookbookCuisineListComponent {
         return true;
       });
     }
-
     return list;
   });
+
+  protected readonly pagedRecipes = computed(() => {
+    const start = this.currentPage() * this.pageSize;
+    return this.filteredRecipes().slice(start, start + this.pageSize);
+  });
+
+  protected readonly totalPages = computed(() => 
+    Math.ceil(this.filteredRecipes().length / this.pageSize)
+  );
+
+  protected readonly pageNumbers = computed(() => 
+    Array.from({ length: this.totalPages() }, (_, i) => i)
+  );
+
+  changePage(page: number): void {
+    if (page >= 0 && page < this.totalPages()) {
+      this.currentPage.set(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
 
   setDietFilter(value: string): void {
     this.selectedDiet.set(value);

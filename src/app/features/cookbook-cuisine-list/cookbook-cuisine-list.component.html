@@ -60,9 +60,9 @@
 
   <section class="cuisine-list__content">
     <div class="cuisine-list__rows">
-      @for (recipe of filteredRecipes(); track recipe.id; let i = $index) {
+      @for (recipe of pagedRecipes(); track recipe.id; let i = $index) {
       <app-recipe-list-row 
-      [index]="i + 1" 
+      [index]="(currentPage() * pageSize) + i + 1" 
       [title]="recipe.title" 
       [time]="recipe.cooking_time + ' min'" 
       [tags]="recipe.diet_type ? [recipe.diet_type] : []"
@@ -75,16 +75,34 @@
       }
     </div>
 
-    <nav class="pagination" aria-label="Page navigation">
-      <button class="pagination__arrow" aria-label="Previous page">‹</button>
-      <div class="pagination__pages">
-        <button class="pagination__page pagination__page--active">1</button>
-        <button class="pagination__page">2</button>
-        <button class="pagination__page">3</button>
-        <span class="pagination__dots">...</span>
-        <button class="pagination__page">8</button>
-      </div>
-      <button class="pagination__arrow" aria-label="Next page">›</button>
-    </nav>
+    @if (totalPages() > 1) {
+      <nav class="pagination" aria-label="Page navigation">
+        <button 
+          class="pagination__arrow" 
+          (click)="changePage(currentPage() - 1)" 
+          [disabled]="currentPage() === 0"
+          aria-label="Previous page"
+        >‹</button>
+
+        <div class="pagination__pages">
+          @for (pageIdx of pageNumbers(); track pageIdx) {
+            <button 
+              class="pagination__page" 
+              [class.pagination__page--active]="pageIdx === currentPage()"
+              (click)="changePage(pageIdx)"
+            >
+              {{ pageIdx + 1 }}
+            </button>
+          }
+        </div>
+
+        <button 
+          class="pagination__arrow" 
+          (click)="changePage(currentPage() + 1)" 
+          [disabled]="currentPage() + 1 === totalPages()"
+          aria-label="Next page"
+        >›</button>
+      </nav>
+    }
   </section>
 </div>
