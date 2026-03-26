@@ -9,6 +9,7 @@ export class RecipeGeneratorService {
   private http = inject(HttpClient);
   
   isGenerating = signal(false);
+  errorMessage = signal<string | null>(null);
 
   ingredients = signal<Ingredient[]>([]);
   preferences = signal<RecipePreferences>({
@@ -39,6 +40,8 @@ export class RecipeGeneratorService {
   reset() {
     this.ingredients.set([]);
     this.resultIds.set([]);
+    this.errorMessage.set(null);
+    this.isGenerating.set(false);
   }
 
   generateRecipes() {

@@ -15,7 +15,6 @@ import { ButtonComponent } from "../../shared/ui/button/button.component";
 
 @Component({
   selector: 'app-recipe-detail',
-  standalone: true,
   imports: [
     TagComponent,
     ChefsLabelComponent,
@@ -23,24 +22,24 @@ import { ButtonComponent } from "../../shared/ui/button/button.component";
     HeartButtonComponent,
     RouterLink,
     ButtonComponent
-],
+  ],
   templateUrl: './recipe-detail.component.html',
   styleUrl: './recipe-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RecipeDetailComponent {
-  private route = inject(ActivatedRoute);
-  protected recipeService = inject(RecipeService);
-  protected generatorService = inject(RecipeGeneratorService);
+  private readonly route = inject(ActivatedRoute);
+  protected readonly recipeService = inject(RecipeService);
+  protected readonly generatorService = inject(RecipeGeneratorService);
   
   protected initiallyLikedAtLoad = signal<boolean>(false);
 
-  private recipeId$ = this.route.params.pipe(
+  private readonly recipeId$ = this.route.params.pipe(
     map(params => params['id'] as string),
     filter(id => !!id)
   );
 
-  private rawRecipe$ = this.recipeId$.pipe(
+  private readonly rawRecipe$ = this.recipeId$.pipe(
     switchMap(id => {
       const liked = this.checkIfLikedInitially(id);
       this.initiallyLikedAtLoad.set(liked);
@@ -54,37 +53,40 @@ export class RecipeDetailComponent {
     const data = this.rawRecipe();
     if (!data) return null;
 
+    const userInputIngredients = this.generatorService.ingredients();
+    const isFromGenerator = userInputIngredients.length > 0;
+
     const selectedPortions = this.generatorService.preferences().portions;
-    const basePortions = data.base_portions || 2;
-    const factor = selectedPortions / basePortions;
+    const factor = selectedPortions / (data.base_portions || 2);
 
     const scale = (amount: number | string): string => {
       const num = typeof amount === 'string' ? parseFloat(amount) : amount;
       return !isNaN(num) && num > 0 ? (num * factor).toFixed(0) : amount.toString();
     };
 
-    const userIngredientNames = new Set(
-      this.generatorService.ingredients().map(i => i.name.toLowerCase())
-    );
-
     const allIngredients = data.ingredients || [];
+    const scaledAll = allIngredients.map(ing => ({ ...ing, scaledAmount: scale(ing.amount) }));
+
+    const userIngredientNames = new Set(userInputIngredients.map(i => i.name.toLowerCase()));
+    
+    const userIngredients = isFromGenerator 
+      ? scaledAll.filter(i => userIngredientNames.has(i.name.toLowerCase())) 
+      : [];
+      
+    const extraIngredients = isFromGenerator 
+      ? scaledAll.filter(i => !userIngredientNames.has(i.name.toLowerCase())) 
+      : [];
 
     return {
       ...data,
+      isFromGenerator,
       timeLabel: `${data.cooking_time} min`,
-      // Erzeugt ein Array [1, 2, ...] für die app-chefs-label Iteration
       chefsArray: Array.from({ length: data.base_chefs }, (_, i) => i + 1),
-      // Dynamische Tags aus DB + Zeit-Kategorie
       tags: [data.diet_type, data.cooking_time <= 25 ? 'Quick' : 'Medium'].filter(Boolean),
-      // Filterung der Zutaten basierend auf User-Input
-      userIngredients: allIngredients
-        .filter(i => userIngredientNames.has(i.name.toLowerCase()))
-        .map(ing => ({ ...ing, scaledAmount: scale(ing.amount) })),
-      extraIngredients: allIngredients
-        .filter(i => !userIngredientNames.has(i.name.toLowerCase()))
-        .map(ing => ({ ...ing, scaledAmount: scale(ing.amount) })),
-      // Schritte sortieren
-      sortedSteps: [...(data.recipe_steps || [])].sort((a, b) => a.step_number - b.step_number)
+      sortedSteps: [...(data.recipe_steps || [])].sort((a, b) => a.step_number - b.step_number),
+      userIngredients,
+      extraIngredients,
+      displayIngredients: scaledAll
     };
   });
 

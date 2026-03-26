@@ -1,5 +1,4 @@
 @use '../../../../styles/variables' as *;
-
 .generate-input {
   &__header {
     text-align: center;
@@ -45,6 +44,10 @@
   &__field {
     &--ingredient { flex: 1.5; }
     &--size { flex: 1; }
+
+    &-wrapper {
+      @include flex-layout(column, flex-start, left, 16px);
+    }
   }
 
   &__label {
@@ -73,7 +76,7 @@
     box-sizing: border-box;
 
     &--amount {
-      min-width: 80px;
+      min-width: 65px;
       text-align: center;
       padding: 0;
       
@@ -83,6 +86,10 @@
       }
     }
     
+    &--error {
+      outline: 2px solid #e74c3c !important;
+    }
+
     &:focus { outline: 2px solid $color-middle-green; }
   }
 
@@ -127,6 +134,11 @@
     &:hover {
       background-color: rgba($color-middle-green, 0.2);
     }
+
+    &--active {
+      background-color: rgba($color-middle-green, 0.2) !important;
+      font-weight: 600;
+    }
   }
 
   &__add-btn {
@@ -151,8 +163,18 @@
   }
 
   &__list {
-    max-height: 184px;
+    max-height: 185px;
     overflow-y: auto;
+    padding-right: 8px;
+
+    ::ng-deep {
+      .ingredient-item__name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 140px;
+      }
+    }
 
     &::-webkit-scrollbar {
       width: 4px;
@@ -180,4 +202,17 @@
     margin-top: 40px;
     width: 100%;
   }
+}
+
+.error-container {
+  height: 20px;
+  margin-top: 4px;
+}
+
+.error-msg {
+  
+  color: #e74c3c;
+  font-family: $font-quicksand;
+  font-weight: 600;
+  display: block;
 }

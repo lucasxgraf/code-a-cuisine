@@ -11,54 +11,83 @@
       <div class="generate-input__form-row">
         <div class="generate-input__field generate-input__field--ingredient">
           <label class="generate-input__label">Ingredient</label>
-          <div class="generate-input__autocomplete-wrapper">
-            <input 
+          <div class="generate-input__field-wrapper">
+            <div class="generate-input__autocomplete-wrapper">
+              <input
+              id="ingredientInput"
               type="text" 
               formControlName="name" 
               placeholder="Pasta"
-              class="generate-input__input" 
+              maxlength="50"
+              class="generate-input__input"
+              role="combobox"
+              aria-autocomplete="list"
+              [attr.aria-expanded]="isIngredientDropdownOpen() && filteredIngredients().length > 0"
+              aria-haspopup="listbox"
               (input)="toggleIngredientDropdown($event)"
               (click)="toggleIngredientDropdown($event)"
-              (keydown.enter)="addIngredient()"
-            >
-            @if (isIngredientDropdownOpen() && filteredIngredients().length > 0) {
-              <ul class="generate-input__dropdown">
-                @for (item of filteredIngredients(); track item) {
-                  <li class="generate-input__dropdown-item" (click)="selectIngredient(item, $event)">
-                    {{ item }}
-                  </li>
-                }
-              </ul>
-            }
-          </div>
-        </div>
-
-        <div class="generate-input__field generate-input__field--size">
-          <label class="generate-input__label">Serving size</label>
-          <div class="generate-input__size-group">
-            <input type="number" formControlName="amount" class="generate-input__input generate-input__input--amount">
-            <div class="generate-input__select-wrapper generate-input__input" (click)="toggleUnitDropdown($event)">
-              <span class="generate-input__selected-value">
-                {{ ingredientForm.controls.unit.value }}
-              </span>
-              <svg 
-                [class.generate-input__icon--rotated]="isUnitDropdownOpen()"
-                class="generate-input__icon" width="10" height="5" viewBox="0 0 10 5" fill="none"
+              (input)="onNameInput($event)"
+              (keydown)="handleKeydown($event)"
+              (keydown.enter)="activeSelectedIndex() === -1 && addIngredient()"
               >
-                <path d="M5 5L10 0L0 0L5 5Z" fill="#10310B"/>
-              </svg>
-
-              @if (isUnitDropdownOpen()) {
-                <ul class="generate-input__dropdown">
-                  @for (unit of units; track unit) {
-                    <li class="generate-input__dropdown-item" (click)="selectUnit(unit,  $event)">
-                      {{ unit }}
+              @if (isIngredientDropdownOpen() && filteredIngredients().length > 0) {
+                <ul class="generate-input__dropdown" role="listbox">
+                  @for (item of filteredIngredients(); track item; let i = $index) {
+                    <li class="generate-input__dropdown-item" 
+                      (click)="selectIngredient(item, $event)"
+                      role="option"
+                      [id]="'opt-' + i"
+                      [class.generate-input__dropdown-item--active]="i === activeSelectedIndex()"
+                      [attr.aria-selected]="i === activeSelectedIndex()"
+                      (mouseenter)="activeSelectedIndex.set(i)"
+                    >
+                      {{ item }}
                     </li>
                   }
                 </ul>
               }
             </div>
-            <button type="button" class="generate-input__add-btn" (click)="addIngredient()">+</button>
+            <div class="error-container">
+              @if (hasError('name')) {
+                <span class="error-msg">Letters only, max 50 characters.</span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="generate-input__field generate-input__field--size">
+          <label class="generate-input__label">Serving size</label>
+          <div class="generate-input__field-wrapper">
+            <div class="generate-input__size-group">
+              <input type="text" formControlName="amount" maxlength="5" minlength="1" inputmode="numeric" placeholder="100" class="generate-input__input generate-input__input--amount" [class.generate-input__input--error]="ingredientForm.controls.amount.invalid && ingredientForm.controls.amount.touched" (input)="onAmountInput($event)">
+              <div class="generate-input__select-wrapper generate-input__input" (click)="toggleUnitDropdown($event)">
+                <span class="generate-input__selected-value">
+                  {{ ingredientForm.controls.unit.value }}
+                </span>
+                <svg 
+                [class.generate-input__icon--rotated]="isUnitDropdownOpen()"
+                  class="generate-input__icon" width="10" height="5" viewBox="0 0 10 5" fill="none"
+                  >
+                  <path d="M5 5L10 0L0 0L5 5Z" fill="#10310B"/>
+                </svg>
+                
+                @if (isUnitDropdownOpen()) {
+                  <ul class="generate-input__dropdown">
+                    @for (unit of units; track unit) {
+                      <li class="generate-input__dropdown-item" (click)="selectUnit(unit,  $event)">
+                        {{ unit }}
+                      </li>
+                    }
+                  </ul>
+                }
+              </div>
+              <button type="button" class="generate-input__add-btn" (click)="addIngredient()">+</button>
+            </div>
+            <div class="error-container">
+              @if (hasError('amount')) {
+                <span class="error-msg">Please enter a amount.</span>
+              }
+            </div>
           </div>
         </div>
       </div>
