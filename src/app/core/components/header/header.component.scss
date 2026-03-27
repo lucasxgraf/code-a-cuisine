@@ -2,13 +2,13 @@
 
 .header {
   padding: 40px;
-  @include flex-layout($direction: column, $ai: flex-start, $g: 16px);
+  @include flex-layout(column, flex-start, flex-start, 16px);
   position: relative;
   z-index: 1000;
 
   &__logo {
     text-decoration: none;
-    @include flex-layout($ai: center, $g: 12px);
+    @include flex-layout(row, center, center, 12px);
 
     &-text {
       font-family: $font-ubuntu;

@@ -8,10 +8,22 @@ $color-white: #FFFFFF;
 $font-quicksand: 'Quicksand', sans-serif;
 $font-ubuntu: 'Ubuntu', sans-serif;
 
-@mixin flex-layout($direction:row, $jc:center, $ai: center, $g:0){
+$min-touch-target: 48px;
+
+$bp-xs: 480px;
+$bp-sm: 640px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;
+
+@mixin flex-layout($direction:row, $jc:center, $ai: center, $g:0) {
   display: flex;
   flex-direction: $direction;
   justify-content: $jc;
   align-items: $ai;
   gap: $g;
+}
+
+@mixin respond-to($bp) {
+  @media (max-width: $bp) { @content; }
 }

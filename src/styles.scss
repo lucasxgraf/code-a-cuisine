@@ -87,6 +87,14 @@ input {
   margin: 0 auto;
   max-width: 1440px;
   padding: 0 40px;
+
+  @include respond-to($bp-md) {
+    padding: 0 24px;
+  }
+
+  @include respond-to($bp-xs) {
+    padding: 0 16px;
+  }
 }
 
 main.main-content {
