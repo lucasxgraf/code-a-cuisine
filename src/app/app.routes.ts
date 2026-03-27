@@ -7,6 +7,8 @@ import { ResultComponent } from './features/generator/result/result.component';
 import { RecipeDetailComponent } from './features/recipe-detail/recipe-detail.component';
 import { CookbookComponent } from './features/cookbook/cookbook.component';
 import { CookbookCuisineListComponent } from './features/cookbook-cuisine-list/cookbook-cuisine-list.component';
+import { LegalNoticeComponent } from './features/legal/legal-notice/legal-notice.component';
+import { PrivacyPolicyComponent } from './features/legal/privacy-policy/privacy-policy.component';
 
 export const routes: Routes = [
   { 
@@ -91,6 +93,26 @@ export const routes: Routes = [
   { 
     path: 'recipe/:id', 
     component: RecipeDetailComponent,
+    data: { 
+      headerTheme: 'green-logo', 
+      backLink: true, 
+      backTarget: 'auto', 
+      backLabel: 'Back' 
+    }
+  },
+  { 
+    path: 'legal-notice', 
+    component: LegalNoticeComponent,
+    data: { 
+      headerTheme: 'green-logo', 
+      backLink: true, 
+      backTarget: 'auto', 
+      backLabel: 'Back' 
+    }
+  },
+  { 
+    path: 'privacy-policy', 
+    component: PrivacyPolicyComponent,
     data: { 
       headerTheme: 'green-logo', 
       backLink: true, 
