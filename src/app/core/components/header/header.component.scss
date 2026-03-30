@@ -6,14 +6,27 @@
   position: relative;
   z-index: 1000;
 
+  @include respond-to($bp-md) {
+    padding: 24px;
+  }
+
+  @include respond-to($bp-xs) {
+    padding: 16px;
+    gap: 10px;
+  }
+
   &__logo {
     text-decoration: none;
     @include flex-layout(row, center, center, 12px);
 
+    @include respond-to($bp-md) {
+      width: 95px;
+    }
+
     &-text {
       font-family: $font-ubuntu;
       font-weight: 700;
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       color: $color-dark-green;
     }
   }
@@ -25,9 +38,13 @@
     font-family: $font-quicksand;
     font-weight: 500;
     transition: color 0.3s ease;
-
+    
     &:hover {
       color: $color-middle-green;
+    }
+
+    @include respond-to($bp-md) {
+      min-height: $min-touch-target;
     }
   }
 
