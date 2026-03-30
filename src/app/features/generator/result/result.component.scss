@@ -21,32 +21,65 @@
   &__header {
     @include flex-layout(row, space-between, stretch);
     margin-bottom: 64px;
-    padding-top: 24px
+    padding-top: 24px;
+
+    @include respond-to($bp-lg) {
+      flex-direction: column;
+      gap: 32px;
+      margin-bottom: 40px;
+      padding-top: 0;
+    }
   }
 
   &__info {
     @include flex-layout(column, space-between, flex-start, 32px);
     flex: 1;
     max-width: 600px;
+
+    @include respond-to($bp-md) {
+      max-width: 100%;
+      gap: 24px;
+    }
   }
 
   &__title {
     font-family: $font-quicksand;
     font-size: 3.5rem;
     font-weight: 600;
+
+    @include respond-to($bp-md) {
+      font-size: 2.5rem;
+    }
+
+    @include respond-to($bp-xs) {
+      font-size: 1.75rem;
+    }
   }
 
   &__description {
     font-family: $font-quicksand;
     font-size: 1.5rem;
+
+    @include respond-to($bp-xs) {
+      font-size: 1.125rem;
+    }
   }
 
   &__filters {
     @include flex-layout(row, flex-start, center, 16px);
+    flex-wrap: wrap;
+
+    @include respond-to($bp-xs) {
+      gap: 8px;
+    }
   }
 
   &__visual {
     flex-shrink: 0;
+    @include respond-to($bp-lg) {
+      width: 100%;
+      align-items: center;
+    }
   }
 
   &__robot-img {
@@ -56,6 +89,12 @@
     object-fit: cover;
     box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     display: block;
+
+    @include respond-to($bp-md) {
+      width: 100%;
+      height: auto;
+      max-height: 250px;
+    }
   }
 
   &__grid {
@@ -63,9 +102,22 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 32px;
     margin-bottom: 64px;
+
+    @include respond-to($bp-lg) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-to($bp-md) {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
   }
 
   &__footer {
     @include flex-layout($jc: flex-end);
+
+    @include respond-to($bp-md) {
+      justify-content: center;
+    }
   }
 }
