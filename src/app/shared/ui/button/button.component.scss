@@ -16,6 +16,12 @@
   white-space: nowrap;
   text-decoration: none;
   padding: 16px 24px;
+  min-height: $min-touch-target;
+  border-radius: 12px;
+
+  @include respond-to($bp-xs) {
+    padding: 12px 20px;
+  }
 
   &__arrow {
     font-size: 1.25rem;
@@ -59,7 +65,6 @@
   &--secondary-creme {
     color: $color-creme;
     font-weight: 500;
-    color: $color-creme;
 
     &:hover { 
       background-color: rgba($color-creme, 0.2);
