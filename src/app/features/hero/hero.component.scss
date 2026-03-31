@@ -1,7 +1,7 @@
 @use '../../../styles/variables' as *;
 
 .hero {
-  height: 100vh; 
+  height: 100vh;
   width: 100%;
   @include flex-layout(row, space-between, center);
   overflow: hidden;
@@ -18,15 +18,33 @@
     height: 100%;
     padding-top: 112px;
   }
-  
+
   &__content {
     flex: 0 0 auto;
     z-index: 10;
     @include flex-layout(column, space-between, flex-start, 48px);
     height: 60vh;
 
+    @include respond-to($bp-md) {
+      gap: 32px;
+      height: 75vh;
+    }
+
+    @include respond-to($bp-xs) {
+      gap: 12px;
+      max-width: 50%;
+    }
+
     &__wrapper {
       @include flex-layout(column, flex-start, flex-start, 48px);
+
+      @include respond-to($bp-md) {
+        gap: 24px;
+      }
+
+      @include respond-to($bp-xs) {
+        gap: 16px;
+      }
     }
   }
 
@@ -35,46 +53,105 @@
     font-size: 2.5rem;
     font-weight: 600;
     margin-bottom: 24px;
+
+    @include respond-to($bp-xl) {
+      font-size: 2rem;
+    }
+
+    @include respond-to($bp-lg) {
+      font-size: 1.5rem;
+    }
+
+    @include respond-to($bp-md) {
+      font-size: 1.25rem;
+    }
   }
 
   &__title {
     font-family: $font-ubuntu;
     font-size: 6rem;
     font-weight: 700;
+
+    @include respond-to($bp-xl) {
+      font-size: 4.5rem;
+    }
+
+    @include respond-to($bp-lg) {
+      font-size: 4rem;
+    }
+
+    @include respond-to($bp-md) {
+      font-size: 3rem;
+    }
+
+    @include respond-to($bp-sm) {
+      font-size: 2rem;
+    }
+
+    @include respond-to($bp-xs) {
+      font-size: 1.5rem;
+    }
   }
 
   &__footer {
     @include flex-layout(row, center, center, 24px);
-    
+
+    @include respond-to($bp-xl) {
+      @include flex-layout(column, flex-start, flex-start, 24px);
+    }
+
     &-text {
       font-family: $font-ubuntu;
       font-weight: 500;
       font-size: 2rem;
+
+      @include respond-to($bp-md) {
+        font-size: 1.25rem;
+      }
+    }
+
+    ::ng-deep .btn {
+      padding: 10px 20px;
+      font-size: 1.5rem;
+
+      @include respond-to($bp-md) {
+        padding: 6px 14px;
+        font-size: 1.25rem;
+      }
     }
   }
 
   &__visual {
     position: absolute;
     right: 0;
-    top: 0; 
+    top: 0;
     height: 100vh;
     @include flex-layout(column, center, center);
-    pointer-events: none; 
+    pointer-events: none;
     z-index: 5;
-  }
 
-  &__plate {
-    @include flex-layout(column, center, center);
-
-    img {
-      height: 48vh;
-      width: auto;
-      object-fit: cover;
-      filter: drop-shadow(-20px 20px 30px rgba(0,0,0,0.3));
+    @include respond-to($bp-md) {
+      top: auto;
+      bottom: 0;
+      height: 120vh;
+      @include flex-layout(column, flex-end, flex-end);
+      right: 0;
     }
 
-    &--1 { z-index: 1; }
-    &--2 { z-index: 2; margin-top: -22vh}
-    &--3 { z-index: 3; margin-top: -22vh}
+    img {
+      display: block;
+      height: 100vh;
+      width: auto;
+      object-fit: cover;
+      filter: drop-shadow(-20px 20px 30px rgba(0, 0, 0, 0.3));
+
+      @include respond-to($bp-md) {
+        height: 120vh;
+        width: 100%; // Fill the constrained container
+        object-fit: contain; // Maintain aspect ratio within constrained width
+        object-position: right;
+      }
+    }
   }
+
 }
