@@ -17,6 +17,10 @@
 
   &__main {
     @include flex-layout(row, center, center, 16px);
+
+    @include respond-to($bp-md) {
+      gap: 8px;
+    }
   }
 
   &__number {
@@ -46,6 +50,10 @@
     font-size: 1.5rem;
     font-weight: 500;
     color: $color-middle-green;
+
+    @include respond-to($bp-md) {
+      font-size: 1.25rem;
+    }
   }
 
   &__tags {
