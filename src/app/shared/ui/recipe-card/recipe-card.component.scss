@@ -17,6 +17,15 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease;
 
+  @include respond-to($bp-md) {
+    max-width: none;
+  }
+
+  @include respond-to($bp-xs) {
+    padding: 24px 16px;
+    gap: 16px;
+  }
+
   &:hover {
     transform: translateY(-4px);
     background-color: #D7DFD7E5;

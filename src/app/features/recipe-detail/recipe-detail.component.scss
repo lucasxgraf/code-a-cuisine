@@ -23,7 +23,7 @@
     }
 
     @include respond-to($bp-xs) {
-      padding: 16px;
+      padding: 8px;
     }
 
     &__header {
@@ -103,6 +103,10 @@
     &__actions {
       @include flex-layout(row, flex-start, center, 12px);
       flex-wrap: wrap;
+
+      @include respond-to($bp-xs) {
+        order: 3;
+      }
     }
 
     &__likes {
@@ -132,7 +136,6 @@
       color: $color-dark-green;
 
       @include respond-to($bp-sm) {
-        grid-template-columns: repeat(2, 1fr);
         gap: 16px;
       }
 
@@ -140,11 +143,11 @@
         @include flex-layout(column, center, center, 8px);
         font-family: $font-quicksand;
 
+        @include respond-to($bp-xs) {
+          font-size: 0.875rem;
+        }
         strong {
           text-transform: uppercase;
-          @include respond-to($bp-xs) {
-            font-size: 0.875rem;
-          }
         }
       }
     }
