@@ -5,7 +5,6 @@ import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-footer',
-  standalone: true,
   imports: [RouterLink],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',

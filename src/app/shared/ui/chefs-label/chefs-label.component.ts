@@ -10,6 +10,10 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 export class ChefsLabelComponent {
   chefId = input.required<number>();
 
+  /** 
+   * Computes the CSS classes following BEM methodology.
+   * @returns A string containing the base class and the chef-specific modifier.
+   */
   protected labelClasses = computed(() => {
     return `chef-label chef-label--${this.chefId()}`;
   });

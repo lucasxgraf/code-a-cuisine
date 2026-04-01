@@ -18,6 +18,10 @@ export class ButtonComponent {
   type = input<'button' | 'submit' | 'reset'>('button');
   routerLink = input<string | unknown[] | null>(null);
 
+  /** 
+   * Dynamically computes the BEM CSS classes based on the current variant and color scheme. 
+   * @returns A string of space-separated CSS classes.
+   */
   protected buttonClasses = computed(() => {
     return `btn btn--${this.variant()}-${this.colorScheme()}`;
   });

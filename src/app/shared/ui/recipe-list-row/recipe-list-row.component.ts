@@ -4,7 +4,6 @@ import { HeartButtonComponent } from "../heart-button/heart-button.component";
 
 @Component({
   selector: 'app-recipe-list-row',
-  standalone: true,
   imports: [TagComponent, HeartButtonComponent],
   templateUrl: './recipe-list-row.component.html',
   styleUrl: './recipe-list-row.component.scss',
