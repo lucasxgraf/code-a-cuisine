@@ -62,7 +62,7 @@ export class RecipeGeneratorService {
       preferences: this.preferences() 
     };
     
-    const n8nUrl = 'http://localhost:5678/webhook-test/generate-recipes';
+    const n8nUrl = 'http://localhost:5678/webhook/generate-recipes';
 
     return this.http.post<{ recipeIds: string[] }>(n8nUrl, payload);
   }

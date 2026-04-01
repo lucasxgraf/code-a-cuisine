@@ -7,6 +7,7 @@ export interface Ingredient {
   amount: number | string;
   unit: string;
   is_extra: boolean;
+  scaledAmount?: string;
 }
 
 /**
