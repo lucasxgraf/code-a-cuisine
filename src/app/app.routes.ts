@@ -10,6 +10,20 @@ import { CookbookCuisineListComponent } from './features/cookbook-cuisine-list/c
 import { LegalNoticeComponent } from './features/legal/legal-notice/legal-notice.component';
 import { PrivacyPolicyComponent } from './features/legal/privacy-policy/privacy-policy.component';
 
+
+/**
+ * Global application routing configuration.
+ * 
+ * Routes utilize the 'data' property to pass metadata to the Header and Footer components:
+ * - headerTheme: Determines the visual style of the header.
+ * - backLink: Boolean to show/hide the back button.
+ * - backTarget: Explicit path or 'auto' for historical navigation.
+ * - backLabel: Text displayed next to the back button.
+ * - hideFooter: Boolean to toggle the global footer visibility.
+ * 
+ * Feature routes are lazy-loaded using dynamic imports to optimize performance.
+ */
+
 export const routes: Routes = [
   { 
     path: '', 
