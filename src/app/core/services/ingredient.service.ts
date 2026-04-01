@@ -9,18 +9,17 @@ import { SpoonacularIngredient } from '../models/recipe.model';
 })
 export class IngredientService {
   private http = inject(HttpClient);
-
   private readonly API_KEY = environment.spoonacularApiKey;
   private readonly BASE_URL = environment.spoonacularApiUrl;
 
+  /**
+   * Searches for ingredients matching the query string.
+   * @param query The search term.
+   * @returns Observable array of ingredient names.
+   */
   searchIngredients(query: string): Observable<string[]> {
     if (query.length < 2) return of([]);
-
-    const params = new HttpParams()
-      .set('apiKey', this.API_KEY)
-      .set('query', query)
-      .set('number', '3');
-
+    const params = new HttpParams().set('apiKey', this.API_KEY).set('query', query).set('number', '3');
     return this.http.get<SpoonacularIngredient[]>(this.BASE_URL, { params }).pipe(
       map(results => results.map(item => item.name))
     );

@@ -27,6 +27,11 @@ export class RecipeGeneratorService {
     });
   }
 
+  /**
+   * Adjusts numeric preference values (portions/people) within allowed bounds.
+   * @param key The specific preference to update.
+   * @param delta The value to add or subtract.
+   */
   changeCount(key: 'portions' | 'people', delta: number) {
     this.preferences.update(p => {
       const min = 1;
@@ -37,6 +42,7 @@ export class RecipeGeneratorService {
     });
   }
 
+  /** Resets the service state to its initial default values. */
   reset() {
     this.ingredients.set([]);
     this.resultIds.set([]);
@@ -44,6 +50,10 @@ export class RecipeGeneratorService {
     this.isGenerating.set(false);
   }
 
+  /**
+   * Triggers the AI generation process by sending inputs to the backend webhook.
+   * @returns Observable containing the array of generated recipe IDs.
+   */
   generateRecipes() {
     this.resultIds.set([]);
     this.isGenerating.set(true);

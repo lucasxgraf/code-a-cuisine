@@ -6,17 +6,17 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class SupabaseService {
-  protected supabase: SupabaseClient;
+  /** The initialized Supabase client instance using environment configurations. */
+  protected readonly supabase: SupabaseClient = createClient(
+    environment.supabaseUrl,
+    environment.supabaseKey
+  );
 
-  constructor() {
-    this.supabase = createClient(
-      environment.supabaseUrl,
-      environment.supabaseKey
-    );
-  }
-
+  /**
+   * Provides access to the shared Supabase client instance.
+   * @returns The active SupabaseClient.
+   */
   get client() {
     return this.supabase;
   }
-
 }
