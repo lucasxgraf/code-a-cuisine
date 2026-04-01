@@ -45,7 +45,7 @@
   &__actions {
     @include flex-layout(row, center, center, 8px);
   }
-
+  
   &__btn {
     background: none; 
     border: none; 
@@ -54,6 +54,10 @@
     color: $color-dark-green;
     @include flex-layout(); 
     transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
   }
 
   &__edit-input {
@@ -109,7 +113,7 @@
 
   &__dropdown-item {
     width: 100%;
-    padding: 2px 8px;
+    padding: 4px 8px;
     font-family: $font-quicksand;
     color: $color-dark-green;
     cursor: pointer;

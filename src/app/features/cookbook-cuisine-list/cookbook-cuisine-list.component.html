@@ -8,22 +8,40 @@
   <div class="cuisine-list__banner">
     @switch (cuisineId()) {
       @case ('italian') {
-        <img src="assets/svg/cookbook-cuisine-list/italian.svg" alt="banner for italian cuisine">
+        <picture>
+          <source media="(max-width: 640px)" srcset="assets/svg/cookbook-cuisine-list/mobile/italian_mobile.svg">
+          <img src="assets/svg/cookbook-cuisine-list/italian.svg" alt="banner for italian cuisine">
+        </picture>
       }
       @case ('german') {
-        <img src="assets/svg/cookbook-cuisine-list/german.svg" alt="banner for german cuisine">
+        <picture>
+          <source media="(max-width: 640px)" srcset="assets/svg/cookbook-cuisine-list/mobile/german_mobile.svg">
+          <img src="assets/svg/cookbook-cuisine-list/german.svg" alt="banner for german cuisine">
+        </picture>
       }
       @case ('indian') {
-        <img src="assets/svg/cookbook-cuisine-list/indian.svg" alt="banner for indian cuisine">
+        <picture>
+          <source media="(max-width: 640px)" srcset="assets/svg/cookbook-cuisine-list/mobile/indian_mobile.svg">
+          <img src="assets/svg/cookbook-cuisine-list/indian.svg" alt="banner for indian cuisine">
+        </picture>
       }
       @case ('japanese') {
-        <img src="assets/svg/cookbook-cuisine-list/japanese.svg" alt="banner for japanese cuisine">
+        <picture>
+          <source media="(max-width: 640px)" srcset="assets/svg/cookbook-cuisine-list/mobile/japanese_mobile.svg">
+          <img src="assets/svg/cookbook-cuisine-list/japanese.svg" alt="banner for japanese cuisine">
+        </picture>
       }
       @case ('gourmet') {
-        <img src="assets/svg/cookbook-cuisine-list/gourmet.svg" alt="banner for gourmet cuisine">
+        <picture>
+          <source media="(max-width: 640px)" srcset="assets/svg/cookbook-cuisine-list/mobile/gourmet_mobile.svg">
+          <img src="assets/svg/cookbook-cuisine-list/gourmet.svg" alt="banner for gourmet cuisine">
+        </picture>
       }
       @case ('fusion') {
-        <img src="assets/svg/cookbook-cuisine-list/fusion.svg" alt="banner for fusion cuisine">
+        <picture>
+          <source media="(max-width: 640px)" srcset="assets/svg/cookbook-cuisine-list/mobile/fusion_mobile.svg">
+          <img src="assets/svg/cookbook-cuisine-list/fusion.svg" alt="banner for fusion cuisine">
+        </picture>
       }
     }
   </div>
@@ -83,7 +101,7 @@
           [disabled]="currentPage() === 0"
           aria-label="Previous page"
         >‹</button>
-
+  
         <div class="pagination__pages">
           @for (pageIdx of pageNumbers(); track pageIdx) {
             <button 
@@ -95,7 +113,7 @@
             </button>
           }
         </div>
-
+  
         <button 
           class="pagination__arrow" 
           (click)="changePage(currentPage() + 1)" 

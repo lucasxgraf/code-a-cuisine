@@ -8,6 +8,10 @@
 .cuisine-card {
   outline: none;
   max-width: 400px;
+
+  @include respond-to($bp-sm) {
+    max-width: none;
+  }
   
   &__title {
     width: fit-content;
@@ -17,6 +21,8 @@
     color: $color-middle-green;
     margin-bottom: 16px;
     cursor: pointer;
+    min-height: $min-touch-target;
+    @include flex-layout(row, flex-start, center);
   }
   
   &__image-wrapper {

@@ -47,7 +47,10 @@
 
     <section>
       <div class="recipe-detail__ingredients-img">
-        <img src="assets/svg/recipe-detail/hero_ingredients.svg" alt="Banner with ingredients">
+        <picture>
+          <source media="(max-width: 640px)" srcset="assets/svg/recipe-detail/mobile/ingredients_mobile.svg">
+          <img src="assets/svg/recipe-detail/hero_ingredients.svg" alt="Banner with ingredients">
+        </picture>
       </div>
 
       <div class="recipe-detail__ingredients-grid">
@@ -84,7 +87,10 @@
 
     <section>
       <div class="recipe-detail__directions-img">
-        <img src="assets/svg/recipe-detail/hero_directions.svg" alt="Banner with directions">
+        <picture>
+          <source media="(max-width: 640px)" srcset="assets/svg/recipe-detail/mobile/directions_mobile.svg">
+          <img src="assets/svg/recipe-detail/hero_directions.svg" alt="Banner with directions">
+        </picture>
       </div>
 
       <div class="recipe-detail__steps">
@@ -112,8 +118,10 @@
     </section>
 
     <section class="recipe-detail__footer">
-      <p><strong>Just finished this meal?</strong></p>
-      <p>Give it a heart, so that the others know this is delicious.</p>
+      <div class="recipe-detail__footer-text">
+        <p><strong>Just finished this meal?</strong></p>
+        <p>Give it a heart, so that the others know this is delicious.</p>
+      </div>
       <app-heart-button 
         [isLiked]="recipeService.isLiked(data.id)" 
         (toggle)="toggleLike()" 

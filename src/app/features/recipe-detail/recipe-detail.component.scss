@@ -4,11 +4,27 @@
   @include flex-layout(column, center, center, 40px);
   width: 100%;
 
+  @include respond-to($bp-md) {
+    gap: 24px;
+    padding: 0 16px;
+  }
+
   .recipe-detail {
     padding: 40px 48px;
     background-color: rgba($color-creme, 0.3);
     border: 4px solid $color-creme;
     border-radius: 24px;
+    width: 100%;
+
+    @include respond-to($bp-md) {
+      padding: 24px;
+      border-radius: 16px;
+      border-width: 2px;
+    }
+
+    @include respond-to($bp-xs) {
+      padding: 8px;
+    }
 
     &__header {
       background-color: $color-creme;
@@ -16,12 +32,28 @@
       padding: 24px;
       margin-bottom: 40px;
 
+      @include respond-to($bp-md) {
+        padding: 16px;
+        margin-bottom: 24px;
+      }
+
       &-content {
         @include flex-layout(row, space-between, center, 40px);
+
+        @include respond-to($bp-md) {
+          flex-direction: column;
+          align-items: center;
+          gap: 24px;
+          width: 100%
+        }
 
         &-left {
           @include flex-layout(column, flex-start, flex-start, 12px);
           max-width: 70%;
+
+          @include respond-to($bp-md) {
+            max-width: 100%;
+          }
         }
       }
     }
@@ -32,6 +64,10 @@
       font-weight: 500;
       font-size: 1.25rem;
       color: $color-olive-green;
+
+      @include respond-to($bp-xs) {
+        font-size: 1rem;
+      }
     }
 
     &__title {
@@ -39,10 +75,19 @@
       font-size: 3.5rem;
       font-weight: 600;
       color: $color-middle-green;
+
+      @include respond-to($bp-md) {
+        font-size: 2.5rem;
+      }
+
+      @include respond-to($bp-xs) {
+        font-size: 1.75rem;
+      }
     }
 
     &__chefs-summary {
       @include flex-layout(row, flex-start, center, 16px);
+      flex-wrap: wrap;
     }
 
     &__header-content-right {
@@ -57,6 +102,11 @@
 
     &__actions {
       @include flex-layout(row, flex-start, center, 12px);
+      flex-wrap: wrap;
+
+      @include respond-to($bp-xs) {
+        order: 3;
+      }
     }
 
     &__likes {
@@ -85,10 +135,17 @@
       gap: 24px;
       color: $color-dark-green;
 
+      @include respond-to($bp-sm) {
+        gap: 16px;
+      }
+
       .nutrition-item {
         @include flex-layout(column, center, center, 8px);
         font-family: $font-quicksand;
 
+        @include respond-to($bp-xs) {
+          font-size: 0.875rem;
+        }
         strong {
           text-transform: uppercase;
         }
@@ -98,10 +155,21 @@
     &__ingredients-img,
     &__directions-img {
       @include flex-layout(row, center, center);
+      
+      img {
+        max-width: 100%;
+        height: auto;
+      }
     }
 
     &__ingredients-grid {
       @include flex-layout(row, space-evenly, flex-start);
+
+      @include respond-to($bp-sm) {
+        flex-direction: column;
+        align-items: center;
+        gap: 32px;
+      }
     }
     
     .ingredient-group {
@@ -114,6 +182,10 @@
         font-weight: 600;
         color: $color-middle-green;
         margin-bottom: 16px;
+
+        @include respond-to($bp-xs) {
+          font-size: 1.25rem;
+        }
       }
     }
 
@@ -125,6 +197,11 @@
       max-width: 1000px;
       margin: 0 auto;
       padding-top: 16px;
+
+      @include respond-to($bp-md) {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
     }
 
     .step-card {
@@ -147,10 +224,14 @@
         &-header {
           @include flex-layout(row, flex-start, center, 8px);
         }
-
+        
         &-title {
           font-size: 1.25rem;
           flex-grow: 1;
+
+          @include respond-to($bp-md) {
+            font-size: 1rem;
+          } 
         }
 
         &-number {
@@ -158,6 +239,10 @@
           background-color: $color-creme;
           padding: 4px 8px;
           border-radius: 20px;
+
+          @include respond-to($bp-md) {
+            font-size: 1rem;
+          } 
         }
 
         &-description {
@@ -179,6 +264,14 @@
       @include flex-layout(row, center, center, 8px);
       margin-top: 40px;
       color: $color-dark-green;
+
+      &-text {
+        @include flex-layout(row, flex-start, flex-start, 8px);
+
+        @include respond-to($bp-md) {
+          flex-direction: column;
+        }
+      }
     }
   }
 
@@ -189,16 +282,39 @@
     border-radius: 20px;
     padding: 40px;
 
+    @include respond-to($bp-md) {
+      padding: 16px;
+      text-align: left;
+      gap: 16px;
+    }
+
     &-text {
       font-family: $font-quicksand;
       font-size: 1.5rem;
       font-weight: 600;
       color: $color-dark-green;
+
+      @include respond-to($bp-md) {
+        font-size: 1rem;
+      }
+    }
+
+    ::ng-deep .btn {
+      font-size: 1.25rem;
+
+      @include respond-to($bp-md) {
+        font-size: 1rem;
+      }
     }
   }
 
   &__nav {
     width: 100%;
     @include flex-layout(row, flex-end, center);
+
+    @include respond-to($bp-md) {
+      justify-content: center;
+    }
   }
 }
+

@@ -8,16 +8,27 @@
     margin-bottom: 80px;
     @include flex-layout(row, space-between, stretch, 60px);
 
-    @media (max-width: 1024px) {
+    @include respond-to($bp-lg) {
       flex-direction: column;
       padding: 32px;
       gap: 40px;
+    }
+
+    @include respond-to($bp-xs) {
+      padding: 16px;
+      margin-bottom: 40px;
+      gap: 16px;
+      border-radius: 16px;
     }
   }
 
   &__intro {
     flex: 1;
     max-width: 500px;
+
+    @include respond-to($bp-lg) {
+      max-width: 100%;
+    }
   }
 
   &__title {
@@ -26,13 +37,26 @@
     font-weight: 700;
     color: $color-middle-green;
     margin-bottom: 16px;
+
+    @include respond-to($bp-md) {
+      font-size: 2.5rem;
+    }
+
+    @include respond-to($bp-xs) {
+      font-size: 1.75rem;
+      margin-bottom: 16px;
+    }
   }
 
   &__description {
     font-family: $font-quicksand;
     font-weight: 500;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     color: $color-dark-green;
+
+    @include respond-to($bp-xs) {
+      font-size: 1rem;
+    }
   }
 
   &__most-liked {
@@ -51,7 +75,7 @@
     
     &__title {
       font-family: $font-quicksand;
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 600;
       color: $color-middle-green;
     }
@@ -61,15 +85,21 @@
       width: 100%;
       overflow-x: auto;
       scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
       
       &::-webkit-scrollbar {
         display: none;
       }
   
       app-most-liked-card {
-        flex: 0 0 320px; 
-        @media (max-width: 600px) {
+        flex: 0 0 320px;
+
+        @include respond-to($bp-md) {
           flex: 0 0 280px;
+        }
+
+        @include respond-to($bp-xs) {
+          flex: 0 0 240px;
         }
       }
     }
@@ -81,16 +111,23 @@
     gap: 48px 32px;
     margin-bottom: 60px;
 
-    @media (max-width: 900px) {
+    @include respond-to($bp-lg) {
       grid-template-columns: repeat(2, 1fr);
+      gap: 32px 24px;
     }
 
-    @media (max-width: 600px) {
+    @include respond-to($bp-sm) {
       grid-template-columns: 1fr;
+      gap: 24px;
+      margin-bottom: 40px;
     }
   }
 
   &__footer {
     @include flex-layout(row, flex-end, center);
+
+    @include respond-to($bp-xs) {
+      justify-content: center;
+    }
   }
 }

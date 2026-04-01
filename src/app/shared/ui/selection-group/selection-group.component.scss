@@ -12,6 +12,11 @@
   @include flex-layout(column, flex-start, flex-start, 24px);
   margin-bottom: 40px;
 
+  @include respond-to($bp-xs) {
+    margin-bottom: 28px;
+    gap: 16px;
+  }
+
   &__title {
     font-family: $font-quicksand;
     font-size: 1.5rem;
@@ -38,11 +43,16 @@
     @include flex-layout(row, flex-start, flex-start, 20px);
     flex-wrap: wrap;
     width: 100%;
+
+    @include respond-to($bp-xs) {
+      gap: 12px;
+    }
   }
 
   &__item {
     @include flex-layout(column, center, center, 8px);
     min-width: 80px;
+    min-height: $min-touch-target;
   }
 
   &__sub {

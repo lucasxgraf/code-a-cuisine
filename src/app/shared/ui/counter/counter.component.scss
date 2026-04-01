@@ -12,12 +12,19 @@
 
   &__controls {
     @include flex-layout(row, space-between, center, 16px);
+    width: 100%;
 
     button {
       cursor: pointer;
       outline: none;
       border: none;
       background-color: transparent;
+      @include flex-layout(row, center, center);
+      
+      @include respond-to($bp-md) {
+        min-width: $min-touch-target;
+        min-height: $min-touch-target;
+      }
 
       &:disabled {
         opacity: 0.3;
