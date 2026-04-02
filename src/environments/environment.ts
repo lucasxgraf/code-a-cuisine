@@ -4,4 +4,5 @@ export const environment = {
   spoonacularApiUrl: '',
   supabaseUrl: '',
   supabaseKey: '',
+  n8nWebhook: ''
 };

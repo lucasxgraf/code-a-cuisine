@@ -1,6 +1,7 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { Ingredient, Recipe, RecipePreferences } from '../models/recipe.model';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -62,7 +63,7 @@ export class RecipeGeneratorService {
       preferences: this.preferences() 
     };
     
-    const n8nUrl = 'https://lucasxgraf.app.n8n.cloud/webhook/generate-recipes';
+    const n8nUrl = environment.n8nWebhook;
 
     return this.http.post<{ recipeIds: string[] }>(n8nUrl, payload);
   }
