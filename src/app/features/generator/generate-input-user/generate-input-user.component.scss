@@ -82,7 +82,7 @@
     @include respond-to($bp-sm) {
       flex-direction: column;
       align-items: stretch;
-      gap: 16px;
+      gap: 108px;
     }
   }
 
@@ -208,6 +208,10 @@
     color: $color-olive-green;
     margin-bottom: 16px;
     font-weight: 500;
+
+    @include respond-to($bp-sm) {
+      font-size: 1.25rem;
+    }
   }
 
   &__list {

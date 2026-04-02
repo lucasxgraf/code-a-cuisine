@@ -15,46 +15,62 @@ export class LoadingComponent {
   private router = inject(Router);
   private generatorService = inject(RecipeGeneratorService);
 
-  protected readonly showLocalError = signal(false);
+  /** Tracks if a local validation or timeout error has occurred. */
+  protected readonly showLocalError = signal<boolean>(false);
 
+  /** 
+   * Computed signal that prioritizes backend errors over local timeout/validation errors. 
+   * @returns An object containing error UI data or null.
+   */
   protected readonly activeError = computed(() => {
     const backendMsg = this.generatorService.errorMessage();
-    
-    if (backendMsg) {
-      return { title: 'Wait a second...', message: backendMsg };
-    }
-
-    if (this.showLocalError()) {
-      return { 
-        title: 'Ups! Something is missing...', 
-        message: 'It looks like the generation took too long or your ingredients are insufficient. Please check and try again.' 
-      };
-    }
-
-    return null;
+    if (backendMsg) return { title: 'Wait a second...', message: backendMsg };
+    return this.showLocalError() ? this.getLocalErrorInfo() : null;
   });
 
   constructor() {
+    this.initNavigationWatcher();
+    this.validateIngredientAvailability();
+    this.startSafetyTimeout();
+  }
+
+  /** Resets the generator state and navigates back to the preferences screen. */
+  handleErrorClose(): void {
+    this.generatorService.reset();
+    this.router.navigate(['/generate-preferences']);
+  }
+
+  /** Sets up an effect to navigate to the results page once recipe IDs are available. */
+  private initNavigationWatcher(): void {
     effect(() => {
       if (this.generatorService.resultIds().length > 0) {
         this.router.navigate(['/generate-result']);
       }
     });
+  }
 
-    const hasIngredients = this.generatorService.ingredients().length >= 1;
-    if (!hasIngredients) {
+  /** Checks if the user has provided enough ingredients to proceed. */
+  private validateIngredientAvailability(): void {
+    if (this.generatorService.ingredients().length < 1) {
       this.showLocalError.set(true);
     }
+  }
 
+  /** Starts a 60-second timer to trigger a local error if no response is received. */
+  private startSafetyTimeout(): void {
     setTimeout(() => {
-      if (this.generatorService.resultIds().length === 0 && !this.activeError()) {
+      const noResponse = this.generatorService.resultIds().length === 0;
+      if (noResponse && !this.activeError()) {
         this.showLocalError.set(true);
       }
     }, 60000);
   }
 
-  handleErrorClose() {
-    this.generatorService.reset();
-    this.router.navigate(['/generate-input-user']);
+  /** Provides the standard error message for local failures. */
+  private getLocalErrorInfo() {
+    return { 
+      title: 'Ups! Something is missing...', 
+      message: 'The generation took too long or your ingredients are insufficient. Please try again.' 
+    };
   }
 }

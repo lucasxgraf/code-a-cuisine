@@ -4,7 +4,6 @@ import { HeartButtonComponent } from "../heart-button/heart-button.component";
 
 @Component({
   selector: 'app-most-liked-card',
-  standalone: true,
   imports: [TagComponent, HeartButtonComponent],
   templateUrl: './most-liked-card.component.html',
   styleUrl: './most-liked-card.component.scss',

@@ -4,7 +4,6 @@ import { SelectionOption } from '../../../core/models/recipe.model';
 
 @Component({
   selector: 'app-selection-group',
-  standalone: true,
   imports: [TagComponent],
   templateUrl: './selection-group.component.html',
   styleUrl: './selection-group.component.scss',

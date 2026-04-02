@@ -23,22 +23,37 @@ export class ResultComponent {
   private recipeService = inject(RecipeService);
   private generatorService = inject(RecipeGeneratorService);
 
-  activeCuisine = computed(() => this.generatorService.preferences().cuisine);
-  activeTime = computed(() => this.generatorService.preferences().cookingTime);
+  /** Derived signal providing the cuisine name from user preferences. */
+  readonly activeCuisine = computed(() => this.generatorService.preferences().cuisine);
 
-  private recipes$ = toObservable(this.generatorService.resultIds).pipe(
+  /** Derived signal providing the cooking time category from user preferences. */
+  readonly activeTime = computed(() => this.generatorService.preferences().cookingTime);
+
+  /** 
+   * Internal observable stream that reacts to changes in generated result IDs 
+   * and triggers a database fetch for the corresponding recipe objects.
+   */
+  private readonly recipes$ = toObservable(this.generatorService.resultIds).pipe(
     switchMap((ids: string[]): Observable<Recipe[]> => 
       this.recipeService.getRecipesByIds(ids)
     )
   );
 
-  recipes = toSignal(this.recipes$, { initialValue: [] as Recipe[] });
+  /** Signal containing the list of fetched Recipe objects, initialized as an empty array. */
+  readonly recipes = toSignal(this.recipes$, { initialValue: [] as Recipe[] });
 
-  onViewRecipe(id: string) {
+  /**
+   * Navigates to the detailed view of a specific recipe.
+   * @param id The unique identifier of the recipe.
+   */
+  onViewRecipe(id: string): void {
     this.router.navigate(['/recipe', id]);
   }
 
-  generateNew() {
+  /**
+   * Resets the generator state and redirects the user back to the ingredient input.
+   */
+  generateNew(): void {
     this.generatorService.reset();
     this.router.navigate(['/generate-input-user']);
   }

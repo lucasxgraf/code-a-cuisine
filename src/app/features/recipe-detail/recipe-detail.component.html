@@ -59,7 +59,7 @@
             <h3 class="ingredient-group__title">Your ingredients</h3>
             <ul class="ingredient-group__list">
               @for (ing of data.userIngredients; track ing.name) {
-                <app-ingredient-list-item [amount]="ing.scaledAmount" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
+                <app-ingredient-list-item [amount]="ing.scaledAmount!" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
               }
             </ul>
           </div>
@@ -67,7 +67,7 @@
             <h3 class="ingredient-group__title">Extra ingredients</h3>
             <ul class="ingredient-group__list">
               @for (ing of data.extraIngredients; track ing.name) {
-                <app-ingredient-list-item [amount]="ing.scaledAmount" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
+                <app-ingredient-list-item [amount]="ing.scaledAmount!" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
               } @empty {
                 <p>No extra ingredients needed.</p>
               }
@@ -77,7 +77,7 @@
           <div class="ingredient-group ingredient-group--full">
             <ul class="ingredient-group__list">
               @for (ing of data.displayIngredients; track ing.name) {
-                <app-ingredient-list-item [amount]="ing.scaledAmount" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
+                <app-ingredient-list-item [amount]="ing.scaledAmount!" [unit]="ing.unit" [name]="ing.name" [isEditable]="false" />
               }
             </ul>
           </div>

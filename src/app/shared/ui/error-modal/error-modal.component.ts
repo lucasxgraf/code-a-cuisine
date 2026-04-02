@@ -3,7 +3,6 @@ import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-error-modal',
-  standalone: true,
   imports: [ButtonComponent],
   templateUrl: './error-modal.component.html',
   styleUrl: './error-modal.component.scss',

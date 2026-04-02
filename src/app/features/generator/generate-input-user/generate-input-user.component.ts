@@ -25,85 +25,85 @@ export class GenerateInputUserComponent {
   private ingredientService = inject(IngredientService);
   private generatorService = inject(RecipeGeneratorService);
 
-  ingredientForm = new FormGroup({
+  /** Form group for adding new ingredients with strict validation and XSS protection patterns. */
+  readonly ingredientForm = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(50), Validators.pattern(/^[a-zA-ZäöüÄÖÜß\s-]+$/)] }),
     amount: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(5), Validators.minLength(1), Validators.pattern(/^[0-9]+$/)] }),
     unit: new FormControl('gram', { nonNullable: true }),
   });
 
-  ingredients = this.generatorService.ingredients;
-  isUnitDropdownOpen = signal(false);
-  isIngredientDropdownOpen = signal(false);
-  units: string[] = ['piece', 'ml', 'gram'];
+  /** Reference to the global ingredients signal. */
+  readonly ingredients = this.generatorService.ingredients;
+  /** UI state for dropdown visibility. */
+  readonly isUnitDropdownOpen = signal(false);
+  readonly isIngredientDropdownOpen = signal(false);
+  /** Available measurement units. */
+  readonly units: string[] = ['piece', 'ml', 'gram'];
+  /** Tracks the currently highlighted index in the autocomplete dropdown. */
+  protected readonly activeSelectedIndex = signal<number>(-1);
 
-  protected activeSelectedIndex = signal<number>(-1);
-
-  private autocompleteStream = this.ingredientForm.controls.name.valueChanges.pipe(
+  /** Observable stream handling debounced autocomplete requests. */
+  private readonly autocompleteStream = this.ingredientForm.controls.name.valueChanges.pipe(
     debounceTime(300),
     distinctUntilChanged(),
-    switchMap(term => {
-      if (term.length < 2) return of([]);
-      return this.ingredientService.searchIngredients(term);
-    })
+    switchMap(term => term.length < 2 ? of([]) : this.ingredientService.searchIngredients(term)),
+    tap(() => this.activeSelectedIndex.set(-1))
   );
 
-  filteredIngredients = toSignal(this.autocompleteStream.pipe(
-    tap(() => this.activeSelectedIndex.set(-1))
-  ), { initialValue: [] as string[] });
+  /** Signal containing filtered ingredient suggestions. */
+  readonly filteredIngredients = toSignal(this.autocompleteStream, { initialValue: [] as string[] });
 
+  /**
+   * Orchestrates keyboard navigation within the autocomplete dropdown.
+   * @param event The native keyboard event.
+   */
   handleKeydown(event: KeyboardEvent): void {
     const results = this.filteredIngredients();
     if (results.length === 0) return;
 
-    switch (event.key) {
-      case 'ArrowDown':
-        event.preventDefault();
-        this.activeSelectedIndex.update(idx => (idx + 1) % results.length);
-        break;
-      case 'ArrowUp':
-        event.preventDefault();
-        this.activeSelectedIndex.update(idx => (idx - 1 + results.length) % results.length);
-        break;
-      case 'Enter':
-        if (this.activeSelectedIndex() >= 0) {
-          event.preventDefault();
-          this.selectIngredient(results[this.activeSelectedIndex()], event);
-        }
-        break;
-      case 'Escape':
-        this.closeAllDropdowns();
-        break;
-      case 'Tab':
-        if (this.activeSelectedIndex() >= 0) {
-          this.selectIngredient(results[this.activeSelectedIndex()], event);
-        }
-        break;
+    const actions: Record<string, () => void> = {
+      'ArrowDown': () => this.moveSelection(1, results.length),
+      'ArrowUp': () => this.moveSelection(-1, results.length),
+      'Enter': () => this.activeSelectedIndex() >= 0 && this.selectIngredient(results[this.activeSelectedIndex()], event),
+      'Escape': () => this.closeAllDropdowns(),
+      'Tab': () => this.activeSelectedIndex() >= 0 && this.selectIngredient(results[this.activeSelectedIndex()], event)
+    };
+
+    if (actions[event.key]) {
+      if (['ArrowDown', 'ArrowUp'].includes(event.key)) event.preventDefault();
+      actions[event.key]();
     }
   }
 
+  /** Toggles the visibility of the unit selection dropdown. */
   toggleUnitDropdown(event: Event): void {
     event.stopPropagation();
     this.isIngredientDropdownOpen.set(false);
     this.isUnitDropdownOpen.update(v => !v);
   }
 
+  /** Toggles the visibility of the ingredient autocomplete dropdown. */
   toggleIngredientDropdown(event: Event): void {
     event.stopPropagation();
     this.isUnitDropdownOpen.set(false);
     this.isIngredientDropdownOpen.set(true);
   }
 
+  /** Closes all active dropdown menus. */
   closeAllDropdowns(): void {
     this.isUnitDropdownOpen.set(false);
     this.isIngredientDropdownOpen.set(false);
   }
 
+  /** Selects an ingredient from the suggestions and updates the form. */
   selectIngredient(name: string, event: Event): void {
     event.stopPropagation();
     this.ingredientForm.patchValue({ name });
     this.closeAllDropdowns();
+    this.activeSelectedIndex.set(-1);
   }
 
+  /** Updates the selected unit and resets state. */
   selectUnit(unit: string, event: Event): void {
     event.stopPropagation();
     this.ingredientForm.patchValue({ unit });
@@ -111,47 +111,28 @@ export class GenerateInputUserComponent {
     this.activeSelectedIndex.set(-1);
   }
   
+  /** Sanitizes the amount input to ensure only numeric characters are entered. */
   protected onAmountInput(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const sanitized = input.value.replace(/[^0-9]/g, '');
-    
-    if (input.value !== sanitized) {
-      input.value = sanitized;
-      this.ingredientForm.controls.amount.setValue(sanitized);
-    }
+    this.filterInput(event, /[^0-9]/g, 'amount');
   }
 
+  /** Sanitizes the name input to ensure only valid alphabetical characters are entered. */
   protected onNameInput(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const sanitized = input.value.replace(/[^a-zA-ZäöüÄÖÜß\s-]/g, '');
-    
-    if (input.value !== sanitized) {
-      input.value = sanitized;
-      this.ingredientForm.controls.name.setValue(sanitized);
-    }
+    this.filterInput(event, /[^a-zA-ZäöüÄÖÜß\s-]/g, 'name');
   }
   
+  /** Validates if a form control has errors and was touched by the user. */
   protected hasError(controlName: 'name' | 'amount'): boolean {
     const control = this.ingredientForm.get(controlName);
     return !!(control?.invalid && control?.touched);
   }
 
-  private sanitizeInput(val: string): string {
-    return val.replace(/<[^>]*>?/gm, '').trim();
-  }
-
+  /** Validates the form and adds the sanitized ingredient to the list. */
   addIngredient(): void {
     if (this.ingredientForm.valid) {
       const raw = this.ingredientForm.getRawValue();
-      const newIngredient: Ingredient = { 
-        id: crypto.randomUUID(), 
-        name: this.sanitizeInput(raw.name),
-        amount: Number(raw.amount),
-        unit: raw.unit, 
-        is_extra: false 
-      };
-
-      this.generatorService.ingredients.update(current => [newIngredient, ...current]);
+      const newItem: Ingredient = this.createIngredientObject(raw);
+      this.ingredients.update(current => [newItem, ...current]);
       this.ingredientForm.reset({ name: '', amount: '100', unit: 'gram' });
       this.ingredientForm.markAsUntouched();
     } else {
@@ -159,19 +140,45 @@ export class GenerateInputUserComponent {
     }
   }
 
+  /** Removes an ingredient from the list by ID. */
   removeIngredient(id: string): void {
     this.ingredients.update(current => current.filter(ing => ing.id !== id));
   }
 
+  /** Updates an existing ingredient's data. */
   updateIngredient(id: string, newData: { amount: number | string, unit: string }): void {
     this.ingredients.update(current =>
       current.map(ing => ing.id === id ? { ...ing, ...newData } : ing)
     );
   }
 
+  /** Navigates to the next step if ingredients are present. */
   nextStep(): void {
     if (this.ingredients().length > 0) {
       this.router.navigate(['/generate-preferences']);
     }
+  }
+
+  private moveSelection(step: number, length: number): void {
+    this.activeSelectedIndex.update(idx => (idx + step + length) % length);
+  }
+
+  private filterInput(event: Event, regex: RegExp, control: 'name' | 'amount'): void {
+    const input = event.target as HTMLInputElement;
+    const sanitized = input.value.replace(regex, '');
+    if (input.value !== sanitized) {
+      input.value = sanitized;
+      this.ingredientForm.get(control)?.setValue(sanitized);
+    }
+  }
+
+  private createIngredientObject(raw: { name: string, amount: string, unit: string }): Ingredient {
+    return {
+      id: crypto.randomUUID(),
+      name: raw.name.replace(/<[^>]*>?/gm, '').trim(),
+      amount: Number(raw.amount),
+      unit: raw.unit,
+      is_extra: false
+    };
   }
 }
