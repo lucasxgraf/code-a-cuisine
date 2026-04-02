@@ -133,7 +133,7 @@
     @include respond-to($bp-md) {
       top: auto;
       bottom: 0;
-      height: 120vh;
+      height: 100vh;
       @include flex-layout(column, flex-end, flex-end);
       right: 0;
     }
@@ -143,12 +143,9 @@
       height: 100vh;
       width: auto;
       object-fit: cover;
-      filter: drop-shadow(-20px 20px 30px rgba(0, 0, 0, 0.3));
 
       @include respond-to($bp-md) {
-        height: 120vh;
-        width: 100%; // Fill the constrained container
-        object-fit: contain; // Maintain aspect ratio within constrained width
+        object-fit: contain;
         object-position: right;
       }
     }
